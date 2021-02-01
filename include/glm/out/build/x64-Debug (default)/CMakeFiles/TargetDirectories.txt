@@ -1,2 +1,0 @@
-D:/devel/omar-private/include/glm/out/build/x64-Debug (default)/CMakeFiles/edit_cache.dir
-D:/devel/omar-private/include/glm/out/build/x64-Debug (default)/CMakeFiles/rebuild_cache.dir
