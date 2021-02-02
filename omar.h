@@ -94,7 +94,9 @@ public:
 		glGenBuffers(1, &VBO);
 
 		glBindVertexArray(VAO);
-
+		
+		// This might have to be rerun when regenerating vertex vector
+		
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, vertVec.size() * sizeof(float), vertVec.data(), GL_STATIC_DRAW);
 		// position coordinates
