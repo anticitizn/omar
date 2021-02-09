@@ -66,10 +66,6 @@ public:
 			cout << "Failed to initialize GLAD" << endl;
 			exit(-1);
 		}
-
-		//	tile vertex vector initialization
-		generateVertexVector();
-		
 		SDL_DisplayMode dm;
 
 		if (SDL_GetDesktopDisplayMode(0, &dm) != 0)
@@ -85,7 +81,10 @@ public:
 		SCR_H = dm.h;
 		cout << "Setting viewport to: " << SCR_W << "/" << SCR_H << endl;
 		SDL_SetWindowSize(screen, SCR_W, SCR_H);
-
+		
+		//	tile vertex vector initialization
+		generateVertexVector();
+		
 		// opengl logic
 		glViewport(0, 0, dm.w, dm.h);
 
@@ -124,14 +123,14 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		int width, height, nrChannels;
+		int imgWidth, imgHeight, nrChannels;
 
 		stbi_set_flip_vertically_on_load(true);
-		unsigned char* data = stbi_load("consolas-mono-16x.bmp", &width, &height, &nrChannels, 0);
+		unsigned char* data = stbi_load("consolas-mono-16x.bmp", &imgWidth, &imgHeight, &nrChannels, 0);
 		
 		if (data)
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, imgWidth, imgHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		}
 		else
@@ -307,7 +306,7 @@ public:
 			for (int y = 0; y < height; y++)
 			{
 				setChar(x, y, ' ');
-				setColor(x, y, textColor);
+				//~ setColor(x, y, textColor);
 				//setTileColor(x, y, tileColor);
 			}
 		}
@@ -404,7 +403,23 @@ public:
 				vertVec[loc + 63] = y2;
 			}
 		}
-
+	}
+	
+	void setString(int x, int y, string str)
+	{
+		for (int i = 0; i < str.length(); i++)
+		{
+			setChar(x + i, y, str[i]);
+		}
+	}
+	
+	void setString(int x, int y, string str, int r, int g, int b)
+	{
+		for (int i = 0; i < str.length(); i++)
+		{
+			setChar(x + i, y, str[i]);
+			setColor(x + i, y, r, g, b);
+		}
 	}
 
 	void setColor(int x, int y, float r, float g, float b)

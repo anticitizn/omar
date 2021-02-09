@@ -47,7 +47,7 @@ public:
 		{
 			cout << "ERROR: SHADER FILE READING UNSUCCESSFUL" << " DIRECTORY: " << vectorPath << ' ' << strerror(errno) << endl;
 		}
-
+		
 		const char* vShaderCode = vertexCode.c_str();
 		const char* fShaderCode = fragmentCode.c_str();
 
