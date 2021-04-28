@@ -10,15 +10,15 @@
 #include <vector>
 #include <algorithm>
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "glad/glad.h"
+#include "include/glm/glm.hpp"
+#include "include/glm/gtc/matrix_transform.hpp"
+#include "include/glm/gtc/type_ptr.hpp"
+#include "include/glad/glad.h"
 #include "SDL.h"
 #include "SDL_opengl.h"
-#include "stb_image.h"
+#include "include/stb_image.h"
 
-#include "shaders/shader.h"
+#include "include/shaders/shader.h"
 #include <algorithm>
 
 using namespace std;

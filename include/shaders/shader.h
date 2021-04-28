@@ -4,10 +4,10 @@
 #include <fstream>
 #include <string>
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "glad/glad.h"
+#include "../glm/glm.hpp"
+#include "../glm/gtc/matrix_transform.hpp"
+#include "../glm/gtc/type_ptr.hpp"
+#include "../glad/glad.cpp"
 #include "SDL.h"
 #include "SDL_opengl.h"
 
