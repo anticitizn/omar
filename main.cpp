@@ -7,8 +7,8 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {   
-	Terminal window;
-	window.initialize(16.0f, ' ');
+	Terminal window(16.0f, ' ', "include/");
+	window.initialize();
 	
 	window.setString(X_POS, Y_POS, "OpenGL ", 120, 255, 87);
 	window.setString(X_POS + 7, Y_POS, "bitMap ", 255, 236, 110);

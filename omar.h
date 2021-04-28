@@ -27,15 +27,19 @@ class Terminal
 {
 public:
 
+	Terminal(float TileSize, char FillSymbol, string ResourcesPath)
+	{
+		tileSize = TileSize;
+		fillSymbol = FillSymbol;
+		resourcesPath = ResourcesPath;
+	}
 	// how many tiles there are in x and y axis
 	int width = 0;
 	int height = 0;
 
-	void initialize(float tileSize, char fillSymbol)
+	void initialize()
 	{
-		this->tileSize = tileSize;
-		this->fillSymbol = fillSymbol;
-		string shadersPath = "include/shaders/";
+		string shadersPath = resourcesPath + "shaders/";
 
 		// SDL window and OpenGL context initialization
 		cout << "Initializing SDL" << endl;
@@ -126,7 +130,7 @@ public:
 		int imgWidth, imgHeight, nrChannels;
 
 		stbi_set_flip_vertically_on_load(true);
-		unsigned char* data = stbi_load("consolas-mono-16x.bmp", &imgWidth, &imgHeight, &nrChannels, 0);
+		unsigned char* data = stbi_load((resourcesPath + "consolas-mono-16x.bmp").c_str(), &imgWidth, &imgHeight, &nrChannels, 0);
 		
 		if (data)
 		{
@@ -501,7 +505,7 @@ public:
 		glm::vec4 tileColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 		vector<float> vertVec;
-
+		string resourcesPath;
 };
 
 #endif
