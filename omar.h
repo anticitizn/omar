@@ -39,7 +39,7 @@ public:
 
 	void initialize()
 	{
-		string shadersPath = resourcesPath + "shaders/";
+		string shadersPath = resourcesPath + "include/shaders/";
 
 		// SDL window and OpenGL context initialization
 		cout << "Initializing SDL" << endl;
