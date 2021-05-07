@@ -332,7 +332,7 @@ public:
 		return (char)-1;
 	}
 
-	glm::vec4 getTextColor(int x, int y)
+	glm::vec3 getTextColor(int x, int y)
 	{
 		if (x < width && y < height && x >= 0 && y >= 0)
 		{
@@ -342,13 +342,12 @@ public:
 			float textColorX = vertVec[n + 4];
 			float textColorY = vertVec[n + 5];
 			float textColorZ = vertVec[n + 6];
-			float textColorW = vertVec[n + 7];
-			return glm::vec4(textColorX, textColorY, textColorZ, textColorW);
+			return glm::vec3(textColorX, textColorY, textColorZ);
 		}
 		return glm::vec4(-1.0f);
 	}
 
-	glm::vec4 getTileColor(int x, int y)
+	glm::vec3 getTileColor(int x, int y)
 	{
 		if (x < width && y < height && x >= 0 && y >= 0)
 		{
@@ -358,8 +357,7 @@ public:
 			float tileColorX = vertVec[n + 8];
 			float tileColorY = vertVec[n + 9];
 			float tileColorZ = vertVec[n + 10];
-			float tileColorW = vertVec[n + 11];
-			return glm::vec4(tileColorX, tileColorY, tileColorZ, tileColorW);
+			return glm::vec3(tileColorX, tileColorY, tileColorZ);
 		}
 		return glm::vec4(-1.0f);
 	}
