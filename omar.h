@@ -1,6 +1,8 @@
 #ifndef OMAR
 #define OMAR
 
+#define xyPos y*width + x
+
 #define GL_GLEXT_PROTOTYPES 1
 #define STB_IMAGE_IMPLEMENTATION
 #include <iostream>
@@ -18,22 +20,167 @@
 #include "SDL_opengl.h"
 #include "include/stb_image.h"
 
+#include "include/Tile.h"
 #include "include/shaders/shader.h"
 #include <algorithm>
 
 using namespace std;
 
+namespace omar
+{
+
 class Terminal
 {
-public:
+private:
+	SDL_Window* screen;
+	
+	string resourcesPath;
+	
+	char fillSymbol = ' ';
+	float tileSize = 16.0f;
+	
+	int contextWidth;
+	int contextHeight;
 
+	float fontSymbolWidth = 16.0f;
+	float fontSymbolHeight = 14.0f;
+
+	Color textColor = Color(255, 255, 255);
+	Color tileColor = Color(0, 0, 0);
+
+	Tile* tiles;
+	float* vertices;
+	
+	void generateTilesArray(Tile** tiles, int width, int height)
+	{
+		*tiles = (Tile*) malloc(width * height * sizeof(Tile));
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				setChar(x, y, ' ');
+				setTextColor(x, y, textColor);
+				setTileColor(x, y, tileColor);
+			}
+		}
+	}
+	
+	void allocateVerticesArray(float** vertices, int width, int height)
+	{
+		int nFloats = 60; // amount of floats for every quad
+		*vertices = (float*) malloc(width * height * nFloats * sizeof(float));
+	}
+	
+	void generateVerticesArray(float** vertices, Tile* tiles, int width, int height)
+	{
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				generateQuad(*vertices + (xyPos) * 60, tiles[xyPos], x, y, tileSize, fontSymbolWidth, fontSymbolHeight);
+			}
+		}
+	}
+	
+	void generateQuad(float* vertices, const Tile& tile, int x, int y, int tileSize, int fontSymbolWidth, int fontSymbolHeight)
+	{
+		int textureTileIndex = tile.symbol - 32;
+		float textureY = floor(textureTileIndex / fontSymbolWidth);
+		float textureX = textureTileIndex - textureY * fontSymbolWidth;
+		
+		float x1 = 8.0f * textureX;	   // left
+		float y1 = 8.0f * textureY;	   // top
+		float x2 = 8.0f * (textureX + 1); // right
+		float y2 = 8.0f * (textureY + 1); // bottom
+		
+		// right top
+		vertices[0] = tileSize * x + tileSize;
+		vertices[1] = tileSize * y + tileSize;
+		vertices[2] = x2;
+		vertices[3] = y2;
+
+		// text color
+		addColorInfo(&vertices[4], tile.textColor);
+
+		// tile color
+		addColorInfo(&vertices[7], tile.tileColor);
+
+		// right bottom
+		vertices[10] = tileSize * x + tileSize;
+		vertices[11] = tileSize * y;
+		vertices[12] = x2;
+		vertices[13] = y1;
+
+		// text color
+		addColorInfo(&vertices[14], tile.textColor);
+
+		// tile color
+		addColorInfo(&vertices[17], tile.tileColor);
+
+		// left bottom
+		vertices[20] = tileSize * x;
+		vertices[21] = tileSize * y;
+		vertices[22] = x1;
+		vertices[23] = y1;
+
+		// text color
+		addColorInfo(&vertices[24], tile.textColor);
+
+		// tile color
+		addColorInfo(&vertices[27], tile.tileColor);
+
+		// left bottom
+		vertices[30] = tileSize * x;
+		vertices[31] = tileSize * y;
+		vertices[32] = x1;
+		vertices[33] = y1;
+
+		// text color
+		addColorInfo(&vertices[34], tile.textColor);
+
+		// tile color
+		addColorInfo(&vertices[37], tile.tileColor);
+
+		// left top
+		vertices[40] = tileSize * x;
+		vertices[41] = tileSize * y + tileSize;
+		vertices[42] = x1;
+		vertices[43] = y2;
+
+		// text color
+		addColorInfo(&vertices[44], tile.textColor);
+
+		// tile color
+		addColorInfo(&vertices[47], tile.tileColor);
+
+		// right top
+		vertices[50] = tileSize * x + tileSize;
+		vertices[51] = tileSize * y + tileSize;
+		vertices[52] = x2;
+		vertices[53] = y2;
+
+		// text color
+		addColorInfo(&vertices[54], tile.textColor);
+
+		// tile color
+		addColorInfo(&vertices[57], tile.tileColor);
+	}
+	
+	void addColorInfo(float* vertices, const Color& color)
+	{
+		vertices[0] = (float)color.r / 255.0f;
+		vertices[1] = (float)color.g / 255.0f;
+		vertices[2] = (float)color.b / 255.0f;
+	}
+	
+public:
 	Terminal(float TileSize, char FillSymbol, string ResourcesPath)
 	{
 		tileSize = TileSize;
 		fillSymbol = FillSymbol;
 		resourcesPath = ResourcesPath;
 	}
-	// how many tiles there are in x and y axis
+	
 	int width = 0;
 	int height = 0;
 
@@ -51,7 +198,7 @@ public:
 		}
 
 		atexit(SDL_Quit);
-		screen = SDL_CreateWindow("Omar Window", 0, 0, SCR_W, SCR_H, SDL_WINDOW_OPENGL);
+		screen = SDL_CreateWindow("Omar Window", 0, 0, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED);
 		if (screen == NULL)
 		{
 			cout << "SDL couldn't set video mode" << endl << SDL_GetError() << endl;
@@ -64,12 +211,6 @@ public:
 
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 		
-		// Initializing GLAD, make sure it's after the OpenGL context initialization
-		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
-		{
-			cout << "Failed to initialize GLAD" << endl;
-			exit(-1);
-		}
 		SDL_DisplayMode dm;
 
 		if (SDL_GetDesktopDisplayMode(0, &dm) != 0)
@@ -78,16 +219,19 @@ public:
 			exit(-1);
 		}
 
-		// int w, h;
-		// w = dm.w;
-		// h = dm.h;
-		SCR_W = dm.w;
-		SCR_H = dm.h;
-		cout << "Setting viewport to: " << SCR_W << "/" << SCR_H << endl;
-		SDL_SetWindowSize(screen, SCR_W, SCR_H);
+		contextWidth = dm.w;
+		contextHeight = dm.h;
+		cout << "Resolution is " << contextWidth << "/" << contextHeight << endl;
 		
-		//	tile vertex vector initialization
-		generateVertexVector();
+		width = floor(contextWidth / tileSize);
+		height = floor(contextHeight / tileSize);
+		
+		// Initializing GLAD, make sure it's after the OpenGL context initialization
+		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+		{
+			cout << "Failed to initialize GLAD" << endl;
+			exit(-1);
+		}
 		
 		// opengl logic
 		glViewport(0, 0, dm.w, dm.h);
@@ -98,22 +242,29 @@ public:
 
 		glBindVertexArray(VAO);
 		
-		// This might have to be rerun when regenerating vertex vector
+		generateTilesArray(&tiles, width, height);
+		allocateVerticesArray(&vertices, width, height);
+		generateVerticesArray(&vertices, tiles, width, height);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, vertVec.size() * sizeof(float), vertVec.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, width * height * 60 * sizeof(float), vertices, GL_STATIC_DRAW);
+		
 		// position coordinates
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
+		
 		// texture coordinates
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(2 * sizeof(float)));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(2 * sizeof(float)));
 		glEnableVertexAttribArray(1);
-		// color attributes
-		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(4 * sizeof(float)));
+		
+		// text color
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(4 * sizeof(float)));
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(8 * sizeof(float)));
+		
+		// tile color
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
 		glEnableVertexAttribArray(3);
-
+		
 		glBindVertexArray(VAO);
 
 		// loading font bitmap
@@ -146,7 +297,7 @@ public:
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 
-		glm::mat4 projection = glm::ortho(0.0f, (float)SCR_W, (float)SCR_H, 0.0f);
+		glm::mat4 projection = glm::ortho(0.0f, (float)contextWidth, (float)contextHeight, 0.0f);
 		glm::mat4 fontProjection = glm::ortho(0.0f, 256.0f, 224.0f, 0.0f);
 
 		Shader sceneShader(shadersPath + "shader.vert", shadersPath + "shader.frag");
@@ -157,148 +308,16 @@ public:
 		sceneShader.setUniform("projection", projection);
 		sceneShader.setUniform("fontProjection", fontProjection);
 	}
-	
-	// generate a sufficiently big vertex array to fill the entire window
-	// running this twice creates some issue
-	void generateVertexVector()
-	{
-		vertVec.clear();
-		
-		width = floor(SCR_W / tileSize);
-		height = floor(SCR_H / tileSize);
-
-		float tileIndex = (float)fillSymbol - 32.0f;
-		float tileY = floor(tileIndex / fontMaxTileW);
-		float tileX = tileIndex - tileY * fontMaxTileW;
-
-		float x1 = 8.0f * tileX;	   // left
-		float y1 = 8.0f * tileY;	   // top
-		float x2 = 8.0f * (tileX + 1); // right
-		float y2 = 8.0f * (tileY + 1); // bottom
-
-		for (int i = 0; i < height; i++)
-		{
-			for (int j = 0; j < width; j++)
-			{
-				// right top
-				vertVec.push_back(tileSize * j + tileSize);
-				vertVec.push_back(tileSize * i + tileSize);
-				vertVec.push_back(x2);
-				vertVec.push_back(y2);
-
-				// text color
-				vertVec.push_back(textColor.x);
-				vertVec.push_back(textColor.y);
-				vertVec.push_back(textColor.z);
-				vertVec.push_back(textColor.w);
-
-				// tile color
-				vertVec.push_back(tileColor.x);
-				vertVec.push_back(tileColor.y);
-				vertVec.push_back(tileColor.z);
-				vertVec.push_back(tileColor.w);
-
-				// right bottom
-				vertVec.push_back(tileSize * j + tileSize);
-				vertVec.push_back(tileSize * i);
-				vertVec.push_back(x2);
-				vertVec.push_back(y1);
-
-				// text color
-				vertVec.push_back(textColor.x);
-				vertVec.push_back(textColor.y);
-				vertVec.push_back(textColor.z);
-				vertVec.push_back(textColor.w);
-
-				// tile color
-				vertVec.push_back(tileColor.x);
-				vertVec.push_back(tileColor.y);
-				vertVec.push_back(tileColor.z);
-				vertVec.push_back(tileColor.w);
-
-				// left bottom
-				vertVec.push_back(tileSize * j);
-				vertVec.push_back(tileSize * i);
-				vertVec.push_back(x1);
-				vertVec.push_back(y1);
-
-				// text color
-				vertVec.push_back(textColor.x);
-				vertVec.push_back(textColor.y);
-				vertVec.push_back(textColor.z);
-				vertVec.push_back(textColor.w);
-
-				// tile color
-				vertVec.push_back(tileColor.x);
-				vertVec.push_back(tileColor.y);
-				vertVec.push_back(tileColor.z);
-				vertVec.push_back(tileColor.w);
-
-				// left bottom
-				vertVec.push_back(tileSize * j);
-				vertVec.push_back(tileSize * i);
-				vertVec.push_back(x1);
-				vertVec.push_back(y1);
-
-				// text color
-				vertVec.push_back(textColor.x);
-				vertVec.push_back(textColor.y);
-				vertVec.push_back(textColor.z);
-				vertVec.push_back(textColor.w);
-
-				// tile color
-				vertVec.push_back(tileColor.x);
-				vertVec.push_back(tileColor.y);
-				vertVec.push_back(tileColor.z);
-				vertVec.push_back(tileColor.w);
-
-				// left top
-				vertVec.push_back(tileSize * j);
-				vertVec.push_back(tileSize * i + tileSize);
-				vertVec.push_back(x1);
-				vertVec.push_back(y2);
-
-				// text color
-				vertVec.push_back(textColor.x);
-				vertVec.push_back(textColor.y);
-				vertVec.push_back(textColor.z);
-				vertVec.push_back(textColor.w);
-
-				// tile color
-				vertVec.push_back(tileColor.x);
-				vertVec.push_back(tileColor.y);
-				vertVec.push_back(tileColor.z);
-				vertVec.push_back(tileColor.w);
-
-				// right top
-				vertVec.push_back(tileSize * j + tileSize);
-				vertVec.push_back(tileSize * i + tileSize);
-				vertVec.push_back(x2);
-				vertVec.push_back(y2);
-
-				// text color
-				vertVec.push_back(textColor.x);
-				vertVec.push_back(textColor.y);
-				vertVec.push_back(textColor.z);
-				vertVec.push_back(textColor.w);
-
-				// tile color
-				vertVec.push_back(tileColor.x);
-				vertVec.push_back(tileColor.y);
-				vertVec.push_back(tileColor.z);
-				vertVec.push_back(tileColor.w);
-			}
-		}
-	}
 
 	void draw()
 	{
-		glBufferData(GL_ARRAY_BUFFER, vertVec.size() * sizeof(float), vertVec.data(), GL_DYNAMIC_DRAW);
+		generateVerticesArray(&vertices, tiles, width, height);
+		glBufferData(GL_ARRAY_BUFFER, width * height * 60 * sizeof(float), vertices, GL_STATIC_DRAW);
 
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glDrawArrays(GL_TRIANGLES, 0, vertVec.size());
+		glDrawArrays(GL_TRIANGLES, 0, width * height * 60);
 
 		SDL_GL_SwapWindow(screen);
 	}
@@ -320,93 +339,72 @@ public:
 	char getChar(int x, int y) 
 	{
 		if (x < width && y < height && x >= 0 && y >= 0)
-		{
-			// the beginning of the tile's vertex nformation
-			int n = (y * width + x) * 72;
-
-			float tileX = vertVec[n + 26];
-			float tileY = vertVec[n + 27];
-			float tileIndex = (tileY / 8.0f) * fontMaxTileW + tileX / 8.0f;
-			return (char)(tileIndex + 32.0f);
-		}
-		return (char)-1;
+			return tiles[xyPos].symbol;
+		else
+			return (char)0;
 	}
 
-	glm::vec3 getTextColor(int x, int y)
+	Color getTextColor(int x, int y)
 	{
 		if (x < width && y < height && x >= 0 && y >= 0)
-		{
-			// the beginning of the tile's vertex nformation
-			int n = (y * width + x) * 72;
-
-			float textColorX = vertVec[n + 4];
-			float textColorY = vertVec[n + 5];
-			float textColorZ = vertVec[n + 6];
-			return glm::vec3(textColorX, textColorY, textColorZ);
-		}
-		return glm::vec4(-1.0f);
+			return tiles[xyPos].textColor;
+		else
+			return Color(0, 0, 0);
 	}
 
-	glm::vec3 getTileColor(int x, int y)
+	Color getTileColor(int x, int y)
 	{
 		if (x < width && y < height && x >= 0 && y >= 0)
-		{
-			// the beginning of the tile's vertex nformation
-			int n = (y * width + x) * 72;
-
-			float tileColorX = vertVec[n + 8];
-			float tileColorY = vertVec[n + 9];
-			float tileColorZ = vertVec[n + 10];
-			return glm::vec3(tileColorX, tileColorY, tileColorZ);
-		}
-		return glm::vec4(-1.0f);
+			return tiles[xyPos].tileColor;
+		else
+			return Color(0, 0, 0);
 	}
-
-	// setter methods
+	
 	void setChar(int x, int y, char symbol)
 	{
 		if (x < width && y < height && x >= 0 && y >= 0)
 		{
-			// bitmap font texture data
-			float tileMaxW = 16.0f; // number of tiles in a row
-			float tileMaxH = 14.0f; // number of tiles in a column
-
-			float tileIndex = (float)symbol - 32.0f;
-			float tileY = floor(tileIndex / tileMaxW);
-			float tileX = tileIndex - tileY * tileMaxW;
-
-			float x1 = 8.0f * tileX;	 // left
-			float y1 = 8.0f * tileY;	 // top
-			float x2 = 8.0f * (++tileX); // right
-			float y2 = 8.0f * (++tileY); // bottom
-			
-			// beware, untested change: '+ x' replaced by clamp(), might cause unforeseen issues
-			// what the fuck did i mean by this comment
-			int loc = 72 * (y * (int)width + clamp(x, 0, width)); 
-			
-			if (loc + 72 < vertVec.size())
-			{
-				vertVec[loc + 2] = x2;
-				vertVec[loc + 3] = y2;
-
-				vertVec[loc + 14] = x2;
-				vertVec[loc + 15] = y1;
-
-				vertVec[loc + 26] = x1;
-				vertVec[loc + 27] = y1;
-
-				vertVec[loc + 38] = x1;
-				vertVec[loc + 39] = y1;
-
-				vertVec[loc + 50] = x1;
-				vertVec[loc + 51] = y2;
-
-				vertVec[loc + 62] = x2;
-				vertVec[loc + 63] = y2;
-			}
+			 tiles[xyPos].symbol = symbol;
 		}
 	}
 	
+	void setTextColor(int x, int y, int r, int g, int b)
+	{
+		if (x < width && y < height && x >= 0 && y >= 0)
+		{
+			 tiles[xyPos].textColor = Color(r, g, b);
+		}
+	}
+	
+	void setTextColor(int x, int y, glm::vec3 color)
+	{
+		setTextColor(x, y, color.x, color.y, color.z);
+	}
+	
+	void setTextColor(int x, int y, Color color)
+	{
+		setTextColor(x, y, color.r, color.g, color.b);
+	}
+	
+	void setTileColor(int x, int y, int r, int g, int b)
+	{
+		if (x < width && y < height && x >= 0 && y >= 0)
+		{
+			 tiles[xyPos].tileColor = Color(r, g, b);
+		}
+	}
+	
+	void setTileColor(int x, int y, glm::vec3 color)
+	{
+		setTileColor(x, y, color.x, color.y, color.z);
+	}
+	
+	void setTileColor(int x, int y, Color color)
+	{
+		setTileColor(x, y, color.r, color.g, color.b);
+	}
+
+	// setter methods
 	void setString(int x, int y, string str)
 	{
 		for (int i = 0; i < str.length(); i++)
@@ -420,53 +418,8 @@ public:
 		for (int i = 0; i < str.length(); i++)
 		{
 			setChar(x + i, y, str[i]);
-			setColor(x + i, y, r, g, b);
+			setTextColor(x + i, y, r, g, b);
 		}
-	}
-
-	void setColor(int x, int y, float r, float g, float b)
-	{
-		if (x < width && y < height && x >= 0 && y >= 0)
-		{
-			for (int i = 0; i < 6; i++)
-			{
-				int loc = 72 * (y * (int)width + x);
-
-				if (loc + 72 < vertVec.size())
-				{
-					vertVec[loc + i * 12 + 4] = r / 255;
-					vertVec[loc + i * 12 + 5] = g / 255;
-					vertVec[loc + i * 12 + 6] = b / 255;
-					vertVec[loc + i * 12 + 7] = 1.0f;
-				}
-			}
-		}
-	}
-
-	void setColor(int x, int y, glm::vec3 color)
-	{
-		setColor(x, y, color.x, color.y, color.z);
-	}
-
-	void setTileColor(int x, int y, float r, float g, float b)
-	{
-		if (x < width && y < height && x >= 0 && y >= 0)
-		{
-			for (int i = 0; i < 6; i++)
-			{
-				int loc = 72 * (y * (int)width + x);
-
-				vertVec[loc + i * 12 + 8]  = r / 255;
-				vertVec[loc + i * 12 + 9]  = g / 255;
-				vertVec[loc + i * 12 + 10] = b / 255;
-				vertVec[loc + i * 12 + 11] = 1.0f;
-			}
-		}
-	}
-
-	void setTileColor(int x, int y, glm::vec3 color)
-	{
-		setTileColor(x, y, color.x, color.y, color.z);
 	}
 	
 	glm::vec2 screenToTilePosition(int x, int y)
@@ -486,24 +439,8 @@ public:
 	{
 		return SDL_GetTicks();
 	}
-	
-	private:
-		SDL_Window* screen;
-		
-		char fillSymbol = ' ';
-		float tileSize = 16.0f;
-
-		int SCR_W = 600;
-		int SCR_H = 800;
-
-		float fontMaxTileW = 16.0f;
-		float fontMaxTileY = 14.0f;
-
-		glm::vec4 textColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		glm::vec4 tileColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
-		vector<float> vertVec;
-		string resourcesPath;
 };
+
+}
 
 #endif

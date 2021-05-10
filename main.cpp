@@ -7,7 +7,7 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {   
-	Terminal window(16.0f, ' ', "");
+	omar::Terminal window(16.0f, ' ', "");
 	window.initialize();
 	
 	window.setString(X_POS, Y_POS, "OpenGL ", 120, 255, 87);
