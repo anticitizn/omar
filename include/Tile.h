@@ -1,3 +1,6 @@
+#ifndef OMAR_TILE
+#define OMAR_TILE
+
 #include "Color.h"
 
 namespace omar
@@ -10,8 +13,11 @@ namespace omar
 			textColor = TextColor;
 			tileColor = TileColor;
 		}
+		
 		char symbol;
 		Color textColor;
 		Color tileColor;
 	};
 }
+
+#endif

@@ -18,6 +18,7 @@
 
 #include "include/Tile.h"
 #include "include/Point.h"
+#include "include/Color.h"
 #include "include/shaders/shader.h"
 
 using namespace std;
@@ -50,13 +51,13 @@ private:
 	Tile* tiles;
 	float* vertices;
 	
-	void allocateVerticesArray(float** vertices, int width, int height)
+	void allocateVertices(float** vertices, int width, int height)
 	{
 		int nFloats = 60; // amount of floats for every quad
 		*vertices = (float*) malloc(width * height * nFloats * sizeof(float));
 	}
 	
-	void generateTilesArray(Tile** tiles, int width, int height)
+	void generateTiles(Tile** tiles, int width, int height)
 	{
 		*tiles = (Tile*) malloc(width * height * sizeof(Tile));
 		for (int y = 0; y < height; y++)
@@ -70,7 +71,7 @@ private:
 		}
 	}
 	
-	void generateVerticesArray(float** vertices, Tile* tiles, int width, int height)
+	void generateVertices(float** vertices, Tile* tiles, int width, int height)
 	{
 		for (int y = 0; y < height; y++)
 		{
@@ -238,9 +239,9 @@ public:
 
 		glBindVertexArray(VAO);
 		
-		generateTilesArray(&tiles, width, height);
-		allocateVerticesArray(&vertices, width, height);
-		generateVerticesArray(&vertices, tiles, width, height);
+		generateTiles(&tiles, width, height);
+		allocateVertices(&vertices, width, height);
+		generateVertices(&vertices, tiles, width, height);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, width * height * 60 * sizeof(float), vertices, GL_STATIC_DRAW);
@@ -307,7 +308,7 @@ public:
 
 	void draw()
 	{
-		generateVerticesArray(&vertices, tiles, width, height);
+		generateVertices(&vertices, tiles, width, height);
 		glBufferData(GL_ARRAY_BUFFER, width * height * 60 * sizeof(float), vertices, GL_STATIC_DRAW);
 
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

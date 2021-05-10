@@ -1,3 +1,6 @@
+#ifndef OMAR_COLOR
+#define OMAR_COLOR
+
 namespace omar
 {
 	struct Color
@@ -8,9 +11,13 @@ namespace omar
 			g = G;
 			b = B;
 		}
+		
 		Color() { }
+		
 		int r;
 		int g;
 		int b;
 	};
 }
+
+#endif

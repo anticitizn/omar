@@ -1,11 +1,21 @@
-struct Point
+#ifndef OMAR_POINT
+#define OMAR_POINT
+
+namespace omar
 {
-	int x;
-	int y;
-	
-	Point(int X, int Y)
+	struct Point
 	{
-		x = X;
-		y = Y;
-	}
-};
+		Point(int X, int Y)
+		{
+			x = X;
+			y = Y;
+		}
+		
+		Point() { }
+		
+		int x;
+		int y;
+	};
+}
+
+#endif
