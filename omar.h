@@ -5,24 +5,20 @@
 
 #define GL_GLEXT_PROTOTYPES 1
 #define STB_IMAGE_IMPLEMENTATION
+
 #include <iostream>
-#include <sstream>
-#include <fstream>
 #include <string>
-#include <vector>
-#include <algorithm>
+#include "SDL.h"
 
 #include "include/glm/glm.hpp"
 #include "include/glm/gtc/matrix_transform.hpp"
 #include "include/glm/gtc/type_ptr.hpp"
 #include "include/glad/glad.h"
-#include "SDL.h"
-#include "SDL_opengl.h"
 #include "include/stb_image.h"
 
 #include "include/Tile.h"
+#include "include/Point.h"
 #include "include/shaders/shader.h"
-#include <algorithm>
 
 using namespace std;
 
@@ -39,8 +35,11 @@ private:
 	char fillSymbol = ' ';
 	float tileSize = 16.0f;
 	
-	int contextWidth;
-	int contextHeight;
+	int contextWidth = 0;
+	int contextHeight = 0;
+	
+	int width = 0;
+	int height = 0;
 
 	float fontSymbolWidth = 16.0f;
 	float fontSymbolHeight = 14.0f;
@@ -50,6 +49,12 @@ private:
 
 	Tile* tiles;
 	float* vertices;
+	
+	void allocateVerticesArray(float** vertices, int width, int height)
+	{
+		int nFloats = 60; // amount of floats for every quad
+		*vertices = (float*) malloc(width * height * nFloats * sizeof(float));
+	}
 	
 	void generateTilesArray(Tile** tiles, int width, int height)
 	{
@@ -63,12 +68,6 @@ private:
 				setTileColor(x, y, tileColor);
 			}
 		}
-	}
-	
-	void allocateVerticesArray(float** vertices, int width, int height)
-	{
-		int nFloats = 60; // amount of floats for every quad
-		*vertices = (float*) malloc(width * height * nFloats * sizeof(float));
 	}
 	
 	void generateVerticesArray(float** vertices, Tile* tiles, int width, int height)
@@ -180,9 +179,6 @@ public:
 		fillSymbol = FillSymbol;
 		resourcesPath = ResourcesPath;
 	}
-	
-	int width = 0;
-	int height = 0;
 
 	void initialize()
 	{
@@ -292,6 +288,7 @@ public:
 		{
 			cout << "Failed to load font texture" << endl;
 		}
+		
 		stbi_image_free(data);
 
 		glActiveTexture(GL_TEXTURE0);
@@ -303,7 +300,6 @@ public:
 		Shader sceneShader(shadersPath + "shader.vert", shadersPath + "shader.frag");
 		sceneShader.use();
 
-		glm::vec4 tileColor = glm::vec4(0.3f, 0.8f, 0.5f, 1.0f);
 		sceneShader.setUniform("fontTexture", 1);
 		sceneShader.setUniform("projection", projection);
 		sceneShader.setUniform("fontProjection", fontProjection);
@@ -329,8 +325,8 @@ public:
 			for (int y = 0; y < height; y++)
 			{
 				setChar(x, y, ' ');
-				//~ setColor(x, y, textColor);
-				//setTileColor(x, y, tileColor);
+				setTextColor(x, y, textColor);
+				setTileColor(x, y, tileColor);
 			}
 		}
 	}
@@ -360,6 +356,7 @@ public:
 			return Color(0, 0, 0);
 	}
 	
+	// setter methods
 	void setChar(int x, int y, char symbol)
 	{
 		if (x < width && y < height && x >= 0 && y >= 0)
@@ -376,11 +373,6 @@ public:
 		}
 	}
 	
-	void setTextColor(int x, int y, glm::vec3 color)
-	{
-		setTextColor(x, y, color.x, color.y, color.z);
-	}
-	
 	void setTextColor(int x, int y, Color color)
 	{
 		setTextColor(x, y, color.r, color.g, color.b);
@@ -394,17 +386,11 @@ public:
 		}
 	}
 	
-	void setTileColor(int x, int y, glm::vec3 color)
-	{
-		setTileColor(x, y, color.x, color.y, color.z);
-	}
-	
 	void setTileColor(int x, int y, Color color)
 	{
 		setTileColor(x, y, color.r, color.g, color.b);
 	}
 
-	// setter methods
 	void setString(int x, int y, string str)
 	{
 		for (int i = 0; i < str.length(); i++)
@@ -422,17 +408,14 @@ public:
 		}
 	}
 	
-	glm::vec2 screenToTilePosition(int x, int y)
+	Point screenToTilePosition(int x, int y)
 	{
-		glm::vec2 temp;
-		temp.x = floor(x/tileSize);
-		temp.y = floor(y/tileSize);
-		return temp;
+		return Point(floor(x / tileSize), floor(y / tileSize));
 	}
 	
-	glm::vec2 screenToTilePosition(glm::vec2 position)
+	Point screenToTilePosition(Point point)
 	{
-		return screenToTilePosition(position.x, position.y);
+		return screenToTilePosition(point.x, point.y);
 	}
 	
 	Uint32 getTicks()
