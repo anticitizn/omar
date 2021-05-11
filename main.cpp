@@ -2,11 +2,11 @@
 
 int main()
 {   
-	int x_pos = 40;
-	int y_pos = 31;
-	
 	omar::Terminal window(16.0f, ' ', "");
 	window.initialize();
+	
+	int x_pos = window.getTileDimensions().x / 3;
+	int y_pos = window.getTileDimensions().y / 2;
 	
 	window.setString(x_pos, y_pos, "OpenGL ", 120, 255, 87);
 	window.setString(x_pos + 7, y_pos, "bitMap ", 255, 236, 110);

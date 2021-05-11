@@ -11,6 +11,14 @@
 #include "SDL.h"
 #include "SDL_opengl.h"
 
+const char *vertShaderCode =
+#include "vertshader.txt"
+;
+
+const char *fragShaderCode =
+#include "fragshader.txt"
+;
+
 using namespace std;
 
 class Shader {
@@ -19,43 +27,11 @@ public:
 
 	Shader(string vectorPath, string fragmentPath)
 	{
-		string vertexCode;
-		string fragmentCode;
-		ifstream vShaderFile;
-		ifstream fShaderFile;
-
-		// ensuring that ifstream objects can throw exceptions
-		vShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
-		fShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
-		try {
-			vShaderFile.open(vectorPath);
-			fShaderFile.open(fragmentPath);
-
-			stringstream vShaderStream;
-			stringstream fShaderStream;
-
-			vShaderStream << vShaderFile.rdbuf();
-			fShaderStream << fShaderFile.rdbuf();
-
-			fShaderFile.close();
-			vShaderFile.close();
-
-			vertexCode = vShaderStream.str();
-			fragmentCode = fShaderStream.str();
-		}
-		catch (ifstream::failure error)
-		{
-			cout << "ERROR: SHADER FILE READING UNSUCCESSFUL" << " DIRECTORY: " << vectorPath << ' ' << strerror(errno) << endl;
-		}
-		
-		const char* vShaderCode = vertexCode.c_str();
-		const char* fShaderCode = fragmentCode.c_str();
-
 		unsigned int vShader = glCreateShader(GL_VERTEX_SHADER);
 		unsigned int fShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-		glShaderSource(vShader, 1, &vShaderCode, NULL);
-		glShaderSource(fShader, 1, &fShaderCode, NULL);
+		glShaderSource(vShader, 1, &vertShaderCode, NULL);
+		glShaderSource(fShader, 1, &fragShaderCode, NULL);
 
 		glCompileShader(vShader);
 		glCompileShader(fShader);
