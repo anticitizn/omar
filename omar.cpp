@@ -147,7 +147,7 @@ void Terminal::addColorInfo(float* vertices, const Color& color)
 
 // Public methods
 
-Terminal::Terminal(const float TileSize = 16.0f, const char FillSymbol = ' ', string ResourcesPath = "")
+Terminal::Terminal(const float TileSize /* = 16.0f */, const char FillSymbol /* = ' ' */, string ResourcesPath /* = "" */)
 {
 	tileSize = TileSize;
 	fillSymbol = FillSymbol;
