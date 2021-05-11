@@ -10,9 +10,7 @@
 #include <string>
 #include "SDL.h"
 
-#include "include/glm/glm.hpp"
 #include "include/glm/gtc/matrix_transform.hpp"
-#include "include/glm/gtc/type_ptr.hpp"
 #include "include/glad/glad.h"
 #include "include/stb_image.h"
 
@@ -31,17 +29,23 @@ class Terminal
 private:
 	SDL_Window* screen;
 	
+	// the path to the font image and the shaders
 	string resourcesPath;
 	
 	char fillSymbol = ' ';
+	
+	// dimensions of one tile, overwritten by constructor
 	float tileSize = 16.0f;
 	
+	// dimensions in pixels
 	int contextWidth = 0;
 	int contextHeight = 0;
 	
+	// dimensions in tiles
 	int width = 0;
 	int height = 0;
 
+	// width and height of a singular character on the font
 	float fontSymbolWidth = 16.0f;
 	float fontSymbolHeight = 14.0f;
 
@@ -51,13 +55,7 @@ private:
 	Tile* tiles;
 	float* vertices;
 	
-	void allocateVertices(float** vertices, int width, int height)
-	{
-		int nFloats = 60; // amount of floats for every quad
-		*vertices = (float*) malloc(width * height * nFloats * sizeof(float));
-	}
-	
-	void generateTiles(Tile** tiles, int width, int height)
+	void generateTiles(Tile** tiles, const int width, const int height)
 	{
 		*tiles = (Tile*) malloc(width * height * sizeof(Tile));
 		for (int y = 0; y < height; y++)
@@ -71,25 +69,31 @@ private:
 		}
 	}
 	
-	void generateVertices(float** vertices, Tile* tiles, int width, int height)
+	void allocateVertices(float** vertices, const int width, const int height)
+	{
+		int nFloats = 60; // amount of floats for every quad
+		*vertices = (float*) malloc(width * height * nFloats * sizeof(float));
+	}
+	
+	void generateVertices(float* vertices, Tile* tiles, const int width, const int height)
 	{
 		for (int y = 0; y < height; y++)
 		{
 			for (int x = 0; x < width; x++)
 			{
-				generateQuad(*vertices + (xyPos) * 60, tiles[xyPos], x, y, tileSize, fontSymbolWidth, fontSymbolHeight);
+				generateQuad(vertices + (xyPos) * 60, tiles[xyPos], x, y, tileSize, fontSymbolWidth, fontSymbolHeight);
 			}
 		}
 	}
 	
-	void generateQuad(float* vertices, const Tile& tile, int x, int y, int tileSize, int fontSymbolWidth, int fontSymbolHeight)
+	void generateQuad(float* vertices, const Tile& tile, const int x, const int y, const int tileSize, const int fontSymbolWidth, const int fontSymbolHeight)
 	{
 		int textureTileIndex = tile.symbol - 32;
 		float textureY = floor(textureTileIndex / fontSymbolWidth);
 		float textureX = textureTileIndex - textureY * fontSymbolWidth;
 		
-		float x1 = 8.0f * textureX;	   // left
-		float y1 = 8.0f * textureY;	   // top
+		float x1 = 8.0f * textureX;	   	  // left
+		float y1 = 8.0f * textureY;		  // top
 		float x2 = 8.0f * (textureX + 1); // right
 		float y2 = 8.0f * (textureY + 1); // bottom
 		
@@ -241,7 +245,7 @@ public:
 		
 		generateTiles(&tiles, width, height);
 		allocateVertices(&vertices, width, height);
-		generateVertices(&vertices, tiles, width, height);
+		generateVertices(vertices, tiles, width, height);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, width * height * 60 * sizeof(float), vertices, GL_STATIC_DRAW);
@@ -308,7 +312,7 @@ public:
 
 	void draw()
 	{
-		generateVertices(&vertices, tiles, width, height);
+		generateVertices(vertices, tiles, width, height);
 		glBufferData(GL_ARRAY_BUFFER, width * height * 60 * sizeof(float), vertices, GL_STATIC_DRAW);
 
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -419,7 +423,7 @@ public:
 		return screenToTilePosition(point.x, point.y);
 	}
 	
-	Uint32 getTicks()
+	unsigned int getTicks()
 	{
 		return SDL_GetTicks();
 	}

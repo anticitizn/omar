@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int main(int argc, char* argv[])
+int main()
 {   
 	omar::Terminal window(16.0f, ' ', "");
 	window.initialize();
