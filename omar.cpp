@@ -168,7 +168,9 @@ void Terminal::initialize()
 	}
 
 	atexit(SDL_Quit);
-	screen = SDL_CreateWindow("Omar Window", 0, 0, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED);
+	screen = SDL_CreateWindow("Omar Window", 0, 0, 1920, 1080, SDL_WINDOW_OPENGL);
+	SDL_MaximizeWindow(screen);
+	
 	if (screen == NULL)
 	{
 		cout << "SDL couldn't set video mode" << endl << SDL_GetError() << endl;
@@ -188,9 +190,11 @@ void Terminal::initialize()
 		SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
 		exit(-1);
 	}
+	
+	SDL_GetWindowSize(screen, &contextWidth, &contextHeight);
 
-	contextWidth = dm.w;
-	contextHeight = dm.h;
+	//~ contextWidth = dm.w;
+	//~ contextHeight = dm.h;
 	cout << "Resolution is " << contextWidth << "/" << contextHeight << endl;
 	
 	width = floor(contextWidth / tileSize);

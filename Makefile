@@ -6,8 +6,8 @@ SOURCES=$(wildcard *.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
 
 CC=g++
-CCFLAGS=-std=c++17 -pedantic -Wall -w -Iinclude/ $(shell pkg-config --cflags sdl2)
-LDFLAGS=-lGL $(shell pkg-config --libs sdl2) -ldl
+CCFLAGS=-std=c++11 -pedantic -Wall -w -Iinclude/ $(shell pkg-config --cflags sdl2)
+LDFLAGS=-lGL $(shell pkg-config --libs sdl2) -ldl -pg
 
 all: $(TARGET)
 

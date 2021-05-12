@@ -19,8 +19,15 @@ int main()
 		window.setTileColor(i, y_pos, 50, 50, 50);
 	}
 	
+	int lastTick = 0;
 	while(true)
 	{
+		unsigned int ticks = window.getTicks();
+		string msFrame = to_string(ticks - lastTick);
+		lastTick = ticks;
+		
+		window.setString(0, 0, msFrame, 255, 255, 255);
 		window.draw();
+		window.setString(0, 0, "                ", 255, 255, 255);
 	}
 }
