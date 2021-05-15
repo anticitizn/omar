@@ -129,3 +129,22 @@ void TileContainer::setString(int x, int y, string str)
 		setChar(x + i, y, str[i]);
 	}
 }
+
+void TileContainer::setString(int x, int y, string str, Color textColor)
+{
+	for (int i = 0; i < str.length(); i++)
+	{
+		setChar(x + i, y, str[i]);
+		setTextColor(x + i, y, textColor);
+	}
+}
+
+void TileContainer::setString(int x, int y, string str, Color textColor, Color tileColor)
+{
+	for (int i = 0; i < str.length(); i++)
+	{
+		setChar(x + i, y, str[i]);
+		setTextColor(x + i, y, textColor);
+		setTileColor(x + i, y, tileColor);
+	}
+}

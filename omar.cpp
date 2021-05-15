@@ -21,8 +21,6 @@
 using namespace std;
 using namespace omar;
 
-// Private methods
-
 void Terminal::allocateVertices(float** vertices, const int width, const int height)
 {
 	int nFloats = 60; // amount of floats for every quad
@@ -118,8 +116,6 @@ void Terminal::addColorInfo(float* vertices, const Color& color)
 	vertices[1] = (float)color.g / 255.0f;
 	vertices[2] = (float)color.b / 255.0f;
 }
-
-// Public methods
 
 Terminal::Terminal(const float TileSize /* = 16.0f */, const char FillSymbol /* = ' ' */, string ResourcesPath /* = "" */)
 {
@@ -338,19 +334,27 @@ void Terminal::setTileColor(int x, int y, Color color)
 
 void Terminal::setString(int x, int y, string str)
 {
-	for (int i = 0; i < str.length(); i++)
-	{
-		setChar(x + i, y, str[i]);
-	}
+	content.setString(x, y, str);
 }
 
-void Terminal::setString(int x, int y, string str, int r, int g, int b)
+void Terminal::setString(int x, int y, string str, Color textColor)
 {
-	for (int i = 0; i < str.length(); i++)
-	{
-		setChar(x + i, y, str[i]);
-		setTextColor(x + i, y, r, g, b);
-	}
+	content.setString(x, y, str, textColor);
+}
+
+void Terminal::setString(int x, int y, string str, int textR, int textG, int textB)
+{
+	content.setString(x, y, str, Color(textR, textG, textB));
+}
+
+void Terminal::setString(int x, int y, string str, Color textColor, Color tileColor)
+{
+	content.setString(x, y, str, textColor, tileColor);
+}
+
+void Terminal::setString(int x, int y, string str, int textR, int textG, int textB, int tileR, int tileG, int tileB)
+{
+	content.setString(x, y, str, Color(textR, textG, textB), Color(tileR, tileG, tileB));
 }
 
 void Terminal::blit(TileContainer& otherCard, int xOffset, int yOffset)

@@ -76,7 +76,12 @@ namespace omar
 		void setTileColor(int x, int y, Color color);
 		
 		void setString(int x, int y, string str);
-		void setString(int x, int y, string str, int r, int g, int b);
+		
+		void setString(int x, int y, string str, Color textColor);
+		void setString(int x, int y, string str, int textR, int textG, int text);
+		
+		void setString(int x, int y, string str, Color textColor, Color tileColor);
+		void setString(int x, int y, string str, int textR, int textG, int textB, int tileR, int tileG, int tileB);
 		
 		void blit(TileContainer& otherCard, int xOffset, int yOffset);
 		
