@@ -23,38 +23,24 @@ using namespace omar;
 
 // Private methods
 
-void Terminal::generateTiles(Tile** tiles, const int width, const int height)
-{
-	*tiles = (Tile*) malloc(width * height * sizeof(Tile));
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			setChar(x, y, ' ');
-			setTextColor(x, y, textColor);
-			setTileColor(x, y, tileColor);
-		}
-	}
-}
-
 void Terminal::allocateVertices(float** vertices, const int width, const int height)
 {
 	int nFloats = 60; // amount of floats for every quad
 	*vertices = (float*) malloc(width * height * nFloats * sizeof(float));
 }
 
-void Terminal::generateVertices(float* vertices, Tile* tiles, const int width, const int height)
+void Terminal::generateVertices(float* vertices, TileContainer content, const int width, const int height)
 {
 	for (int y = 0; y < height; y++)
 	{
 		for (int x = 0; x < width; x++)
 		{
-			generateQuad(vertices + (xyPos) * 60, tiles[xyPos], x, y, tileSize, fontSymbolWidth, fontSymbolHeight);
+			generateQuad(vertices + (xyPos) * 60, content.getTile(x, y), x, y, tileSize, fontSymbolWidth, fontSymbolHeight);
 		}
 	}
 }
 
-void Terminal::generateQuad(float* vertices, const Tile& tile, const int x, const int y, const int tileSize, const int fontSymbolWidth, const int fontSymbolHeight)
+void Terminal::generateQuad(float* vertices, Tile tile, const int x, const int y, const int tileSize, const int fontSymbolWidth, const int fontSymbolHeight)
 {
 	int textureTileIndex = tile.symbol - 32;
 	float textureY = floor(textureTileIndex / fontSymbolWidth);
@@ -216,9 +202,10 @@ void Terminal::initialize()
 
 	glBindVertexArray(VAO);
 	
-	generateTiles(&tiles, width, height);
+	content = TileContainer(width, height, fillSymbol, textColor, tileColor);
+	
 	allocateVertices(&vertices, width, height);
-	generateVertices(vertices, tiles, width, height);
+	generateVertices(vertices, content, width, height);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, width * height * 60 * sizeof(float), vertices, GL_STATIC_DRAW);
@@ -285,7 +272,7 @@ void Terminal::initialize()
 
 void Terminal::draw()
 {
-	generateVertices(vertices, tiles, width, height);
+	generateVertices(vertices, content, width, height);
 	glBufferData(GL_ARRAY_BUFFER, width * height * 60 * sizeof(float), vertices, GL_STATIC_DRAW);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -312,26 +299,17 @@ void Terminal::clear()
 // getter methods
 char Terminal::getChar(int x, int y) 
 {
-	if (x < width && y < height && x >= 0 && y >= 0)
-		return tiles[xyPos].symbol;
-	else
-		return (char)0;
+	return content.getChar(x, y);
 }
 
 Color Terminal::getTextColor(int x, int y)
 {
-	if (x < width && y < height && x >= 0 && y >= 0)
-		return tiles[xyPos].textColor;
-	else
-		return Color(0, 0, 0);
+	return content.getTextColor(x, y);
 }
 
 Color Terminal::getTileColor(int x, int y)
 {
-	if (x < width && y < height && x >= 0 && y >= 0)
-		return tiles[xyPos].tileColor;
-	else
-		return Color(0, 0, 0);
+	return content.getTileColor(x, y);
 }
 
 Point Terminal::getPixelDimensions()
@@ -347,18 +325,12 @@ Point Terminal::getTileDimensions()
 // setter methods
 void Terminal::setChar(int x, int y, char symbol)
 {
-	if (x < width && y < height && x >= 0 && y >= 0)
-	{
-		 tiles[xyPos].symbol = symbol;
-	}
+	content.setChar(x, y, symbol);
 }
 
 void Terminal::setTextColor(int x, int y, int r, int g, int b)
 {
-	if (x < width && y < height && x >= 0 && y >= 0)
-	{
-		 tiles[xyPos].textColor = Color(r, g, b);
-	}
+	content.setTextColor(x, y, r, g, b);
 }
 
 void Terminal::setTextColor(int x, int y, Color color)
@@ -368,10 +340,7 @@ void Terminal::setTextColor(int x, int y, Color color)
 
 void Terminal::setTileColor(int x, int y, int r, int g, int b)
 {
-	if (x < width && y < height && x >= 0 && y >= 0)
-	{
-		 tiles[xyPos].tileColor = Color(r, g, b);
-	}
+	content.setTileColor(x, y, r, g, b);
 }
 
 void Terminal::setTileColor(int x, int y, Color color)

@@ -4,6 +4,7 @@
 #include <string>
 #include "SDL.h"
 
+#include "TileContainer.h"
 #include "include/Tile.h"
 #include "include/Point.h"
 #include "include/Color.h"
@@ -42,13 +43,12 @@ namespace omar
 		Color textColor = Color(255, 255, 255);
 		Color tileColor = Color(0, 0, 0);
 		
-		Tile* tiles;
+		TileContainer content;
 		float* vertices;
 		
-		void generateTiles(Tile** tiles, const int width, const int height);;
 		void allocateVertices(float** vertices, const int width, const int height);
-		void generateVertices(float* vertices, Tile* tiles, const int width, const int height);
-		void generateQuad(float* vertices, const Tile& tile, const int x, const int y, const int tileSize, const int fontSymbolWidth, const int fontSymbolHeight);
+		void generateVertices(float* vertices, TileContainer content, const int width, const int height);
+		void generateQuad(float* vertices, Tile tile, const int x, const int y, const int tileSize, const int fontSymbolWidth, const int fontSymbolHeight);
 		void addColorInfo(float* vertices, const Color& color);
 		
 	public:
