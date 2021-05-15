@@ -29,7 +29,7 @@ void Terminal::allocateVertices(float** vertices, const int width, const int hei
 	*vertices = (float*) malloc(width * height * nFloats * sizeof(float));
 }
 
-void Terminal::generateVertices(float* vertices, TileContainer content, const int width, const int height)
+void Terminal::generateVertices(float* vertices, TileContainer& content, const int width, const int height)
 {
 	for (int y = 0; y < height; y++)
 	{
@@ -57,10 +57,8 @@ void Terminal::generateQuad(float* vertices, Tile tile, const int x, const int y
 	vertices[2] = x2;
 	vertices[3] = y2;
 
-	// text color
 	addColorInfo(&vertices[4], tile.textColor);
 
-	// tile color
 	addColorInfo(&vertices[7], tile.tileColor);
 
 	// right bottom
@@ -69,10 +67,8 @@ void Terminal::generateQuad(float* vertices, Tile tile, const int x, const int y
 	vertices[12] = x2;
 	vertices[13] = y1;
 
-	// text color
 	addColorInfo(&vertices[14], tile.textColor);
 
-	// tile color
 	addColorInfo(&vertices[17], tile.tileColor);
 
 	// left bottom
@@ -81,10 +77,8 @@ void Terminal::generateQuad(float* vertices, Tile tile, const int x, const int y
 	vertices[22] = x1;
 	vertices[23] = y1;
 
-	// text color
 	addColorInfo(&vertices[24], tile.textColor);
 
-	// tile color
 	addColorInfo(&vertices[27], tile.tileColor);
 
 	// left bottom
@@ -93,10 +87,8 @@ void Terminal::generateQuad(float* vertices, Tile tile, const int x, const int y
 	vertices[32] = x1;
 	vertices[33] = y1;
 
-	// text color
 	addColorInfo(&vertices[34], tile.textColor);
 
-	// tile color
 	addColorInfo(&vertices[37], tile.tileColor);
 
 	// left top
@@ -105,10 +97,8 @@ void Terminal::generateQuad(float* vertices, Tile tile, const int x, const int y
 	vertices[42] = x1;
 	vertices[43] = y2;
 
-	// text color
 	addColorInfo(&vertices[44], tile.textColor);
 
-	// tile color
 	addColorInfo(&vertices[47], tile.tileColor);
 
 	// right top
@@ -117,10 +107,8 @@ void Terminal::generateQuad(float* vertices, Tile tile, const int x, const int y
 	vertices[52] = x2;
 	vertices[53] = y2;
 
-	// text color
 	addColorInfo(&vertices[54], tile.textColor);
 
-	// tile color
 	addColorInfo(&vertices[57], tile.tileColor);
 }
 

@@ -47,7 +47,7 @@ namespace omar
 		float* vertices;
 		
 		void allocateVertices(float** vertices, const int width, const int height);
-		void generateVertices(float* vertices, TileContainer content, const int width, const int height);
+		void generateVertices(float* vertices, TileContainer& content, const int width, const int height);
 		void generateQuad(float* vertices, Tile tile, const int x, const int y, const int tileSize, const int fontSymbolWidth, const int fontSymbolHeight);
 		void addColorInfo(float* vertices, const Color& color);
 		
