@@ -43,6 +43,9 @@ namespace omar
 		Color textColor = Color(255, 255, 255);
 		Color tileColor = Color(0, 0, 0);
 		
+		unsigned int lastTick = 0;
+		void displayFps();
+		
 		TileContainer content;
 		float* vertices;
 		
@@ -88,6 +91,7 @@ namespace omar
 		Point screenToTilePosition(int x, int y);
 		Point screenToTilePosition(Point point);
 		
+		bool showFps = false;
 		unsigned int getTicks();
 	};
 

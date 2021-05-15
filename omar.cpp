@@ -117,6 +117,16 @@ void Terminal::addColorInfo(float* vertices, const Color& color)
 	vertices[2] = (float)color.b / 255.0f;
 }
 
+void Terminal::displayFps()
+{
+	unsigned int newTick = getTicks();
+	int fps = 1000 / (int)(newTick - lastTick);
+	lastTick = newTick;
+	
+	setString(0, 0, "   ");
+	setString(0, 0, to_string(fps).substr(0, 3), Color(255, 255, 255), Color(0, 0, 0));
+}
+
 Terminal::Terminal(const float TileSize /* = 16.0f */, const char FillSymbol /* = ' ' */, string ResourcesPath /* = "" */)
 {
 	tileSize = TileSize;
@@ -256,6 +266,9 @@ void Terminal::initialize()
 
 void Terminal::draw()
 {
+	if (showFps)
+		displayFps();
+		
 	generateVertices(vertices, content, width, height);
 	glBufferData(GL_ARRAY_BUFFER, width * height * 60 * sizeof(float), vertices, GL_STATIC_DRAW);
 
