@@ -78,8 +78,9 @@ namespace omar
 		void setString(int x, int y, string str);
 		void setString(int x, int y, string str, int r, int g, int b);
 		
-		Point screenToTilePosition(int x, int y);
+		void blit(TileContainer& otherCard, int xOffset, int yOffset);
 		
+		Point screenToTilePosition(int x, int y);
 		Point screenToTilePosition(Point point);
 		
 		unsigned int getTicks();

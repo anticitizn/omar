@@ -26,7 +26,7 @@ namespace omar
 		
 		Tile* tiles;
 		
-		void generateTiles(Tile** tiles, const int width, const int height);
+		void generateTiles(Tile** tiles, const int width, const int height, const char symbol);
 		
 	public:
 		TileContainer(int Width = 0, int Height = 0, char FillSymbol = ' ', Color TextColor = Color(255, 255, 255), Color TileColor = Color(0, 0, 0));

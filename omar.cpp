@@ -365,6 +365,11 @@ void Terminal::setString(int x, int y, string str, int r, int g, int b)
 	}
 }
 
+void Terminal::blit(TileContainer& otherCard, int xOffset, int yOffset)
+{
+	content.blit(otherCard, xOffset, yOffset);
+}
+
 Point Terminal::screenToTilePosition(int x, int y)
 {
 	return Point(floor(x / tileSize), floor(y / tileSize));

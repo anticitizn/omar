@@ -12,7 +12,7 @@ TileContainer::TileContainer(int Width /*= 0*/, int Height /*= 0*/, char FillSym
 	textColor = TextColor;
 	tileColor = TileColor;
 	
-	generateTiles(&tiles, width, height);
+	generateTiles(&tiles, width, height, fillSymbol);
 }
 
 void TileContainer::blit(TileContainer& otherCard, int xOffset, int yOffset)
@@ -21,22 +21,28 @@ void TileContainer::blit(TileContainer& otherCard, int xOffset, int yOffset)
 	{
 		for (int y = 0; y < otherCard.height; y++)
 		{
-			if (!otherCard.blitTransparency && otherCard.getChar(x, y) != ' ')
+			if (otherCard.blitTransparency && otherCard.getChar(x, y) == ' ')
 			{
-				setChar(xOffset + x, y + yOffset, otherCard.getChar(x, y));
+				
+			}
+			else
+			{
+				setChar(x + xOffset, y + yOffset, otherCard.getChar(x, y));
+				setTextColor(xOffset + x, y + yOffset, otherCard.getTextColor(x, y));
+				setTileColor(xOffset + x, y + yOffset, otherCard.getTileColor(x, y));
 			}
 		}
 	}
 }
 
-void TileContainer::generateTiles(Tile** tiles, const int width, const int height)
+void TileContainer::generateTiles(Tile** tiles, const int width, const int height, const char symbol)
 {
 	*tiles = (Tile*) malloc(width * height * sizeof(Tile));
 	for (int y = 0; y < height; y++)
 	{
 		for (int x = 0; x < width; x++)
 		{
-			setChar(x, y, ' ');
+			setChar(x, y, symbol);
 			setTextColor(x, y, textColor);
 			setTileColor(x, y, tileColor);
 		}

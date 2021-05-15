@@ -1,6 +1,6 @@
 #include "omar.h"
 #include "TileContainer.h"
-#include <iostream>
+
 using namespace omar;
 
 int main()
@@ -21,7 +21,7 @@ int main()
 	{
 		window.setTileColor(i, y_pos, 50, 50, 50);
 	}
-
+	
 	int lastTick = 0;
 	while(true)
 	{
