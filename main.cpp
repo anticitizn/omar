@@ -1,6 +1,5 @@
 #include "omar.h"
 #include "TileContainer.h"
-#include <iostream>
 
 using namespace omar;
 
