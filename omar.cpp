@@ -266,6 +266,7 @@ void Terminal::initialize()
 
 void Terminal::draw()
 {
+	processInput(event);
 	if (showFps)
 		displayFps();
 		
@@ -388,4 +389,96 @@ Point Terminal::screenToTilePosition(Point point)
 unsigned int Terminal::getTicks()
 {
 	return SDL_GetTicks();
+}
+
+Point Terminal::getMousePosTile()
+{
+	return screenToTilePosition(mousePos);
+}
+
+Point Terminal::getClickPosTile()
+{
+	return screenToTilePosition(clickPos);
+}
+
+Point Terminal::getMousePosScreen()
+{
+	return mousePos;
+}
+
+Point Terminal::getClickPosScreen()
+{
+	return clickPos;
+}
+
+bool Terminal::isLClickHeld()
+{
+	return leftClickHeld;
+}
+
+bool Terminal::isRClickHeld()
+{
+	return rightClickHeld;
+}
+
+char Terminal::getKeyPress()
+{
+	return keyPress;
+}
+
+void Terminal::StartTextInput()
+{
+	SDL_StartTextInput();
+}
+
+void Terminal::StopTextInput()
+{
+	SDL_StopTextInput();
+}
+string Terminal::getTextInput()
+{
+	return textInput;
+}
+
+void Terminal::processInput(SDL_Event event)
+{
+	cleanInputVariables();
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+			case SDL_MOUSEBUTTONDOWN:
+				int clickX;
+				int clickY;
+				SDL_GetMouseState(&clickX, &clickY);
+				clickPos.x = clickX;
+				clickPos.y = clickY;
+			break;
+			
+			case SDL_KEYDOWN:
+				keyPress = char(event.key.keysym.sym);
+			break;
+			
+			case SDL_TEXTINPUT:
+				textInput = event.text.text;
+			break;
+			
+			case SDL_MOUSEMOTION:
+				int mouseX;
+				int mouseY;
+				SDL_GetMouseState(&mouseX, &mouseY);
+				mousePos.x = mouseX;
+				mousePos.y = mouseY;
+			break;
+		}
+	}
+}
+
+void Terminal::cleanInputVariables()
+{
+	clickPos.x = -1;
+	clickPos.y = -1;
+	
+	keyPress = (char)-1;
+	textInput = "";
 }

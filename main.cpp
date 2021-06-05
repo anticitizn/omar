@@ -1,5 +1,6 @@
 #include "omar.h"
 #include "TileContainer.h"
+#include <iostream>
 
 using namespace omar;
 
@@ -7,6 +8,7 @@ int main()
 {   
 	omar::Terminal window(16.0f, ' ', "");
 	window.initialize();
+	
 	window.showFps = true;
 	
 	int x_pos = window.getTileDimensions().x / 3;
@@ -23,8 +25,20 @@ int main()
 		window.setTileColor(i, y_pos, 50, 50, 50);
 	}
 	
-	while(true)
+	bool running = true;
+	while (running)
 	{
+		window.setString(0, 2, to_string(window.getMousePosScreen().x));
+		window.setString(0, 3, to_string(window.getMousePosScreen().y));
+		window.setChar(0, 1, window.getKeyPress() > 0 ? window.getKeyPress() : ' ');
+		
+		if(window.getKeyPress() == 27)
+			running = false;
+		
 		window.draw();
+		
+		window.setString(0, 1, "     ");
+		window.setString(0, 2, "     ");
+		window.setString(0, 3, "     ");
 	}
 }

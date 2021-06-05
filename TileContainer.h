@@ -30,6 +30,7 @@ namespace omar
 		
 	public:
 		TileContainer(int Width = 0, int Height = 0, char FillSymbol = ' ', Color TextColor = Color(255, 255, 255), Color TileColor = Color(0, 0, 0));
+		void clear();
 		
 		// blits another card's content into itself starting at the specified x,y offset
 		void blit(TileContainer& otherCard, int xOffset, int yOffset);

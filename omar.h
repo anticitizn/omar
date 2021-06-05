@@ -18,6 +18,7 @@ namespace omar
 	{
 	private:
 		SDL_Window* screen;
+		SDL_Event event;
 		
 		// the path to the font image and the shaders folder
 		string resourcesPath;
@@ -48,6 +49,19 @@ namespace omar
 		
 		TileContainer content;
 		float* vertices;
+		
+		// user input
+		Point clickPos;
+		Point mousePos;
+		
+		bool leftClickHeld;
+		bool rightClickHeld;
+		
+		char keyPress;
+		string textInput;
+		
+		void processInput(SDL_Event event);
+		void cleanInputVariables();
 		
 		void allocateVertices(float** vertices, const int width, const int height);
 		void generateVertices(float* vertices, TileContainer& content, const int width, const int height);
@@ -93,6 +107,23 @@ namespace omar
 		
 		bool showFps = false;
 		unsigned int getTicks();
+		
+		// input methods
+		Point getMousePosTile();
+		Point getClickPosTile();
+		
+		Point getMousePosScreen();
+		Point getClickPosScreen();
+		
+		bool isLClickHeld();
+		bool isRClickHeld();
+		
+		char getKeyPress();
+		
+		void StartTextInput();
+		void StopTextInput();
+		string getTextInput();
+		
 	};
 
 }
