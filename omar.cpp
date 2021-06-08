@@ -112,9 +112,9 @@ void Terminal::generateQuad(float* vertices, Tile tile, const int x, const int y
 
 void Terminal::addColorInfo(float* vertices, const Color& color)
 {
-	vertices[0] = (float)color.r / 255.0f;
-	vertices[1] = (float)color.g / 255.0f;
-	vertices[2] = (float)color.b / 255.0f;
+	vertices[0] = (float)color.r;
+	vertices[1] = (float)color.g;
+	vertices[2] = (float)color.b;
 }
 
 void Terminal::displayFps()
