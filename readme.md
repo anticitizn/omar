@@ -1,4 +1,4 @@
-#### OMAR - **O**penGL bit**M**ap **A**SCII **R**enderer
+#### OMAR - **O**pen bit**M**ap **A**scii **R**enderer
 ---
 ![omar-gif](https://user-images.githubusercontent.com/33865403/107491814-f16cd600-6b8b-11eb-9ba7-f8db69026ec5.gif)
 
