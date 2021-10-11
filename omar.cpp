@@ -148,7 +148,7 @@ void Terminal::initialize()
 	}
 
 	atexit(SDL_Quit);
-	screen = SDL_CreateWindow("Omar Window", 0, 0, 900, 900, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
+	screen = SDL_CreateWindow("Omar Window", 0, 0, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
 	SDL_MaximizeWindow(screen);
 	
 	if (screen == NULL)
