@@ -1,5 +1,6 @@
 #include "omar.h"
 #include "TileContainer.h"
+#include <iostream>
 
 using namespace omar;
 
@@ -29,6 +30,7 @@ int main()
 	{
 		window.setString(0, 2, to_string(window.getMousePosScreen().x));
 		window.setString(0, 3, to_string(window.getMousePosScreen().y));
+		cout << to_string(window.getMousePosScreen().x) << " " << to_string(window.getMousePosScreen().y) << endl;
 		window.setChar(0, 1, window.getKeyPress() > 0 ? window.getKeyPress() : ' ');
 		
 		if(window.getKeyPress() == 27)
