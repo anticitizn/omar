@@ -3,20 +3,20 @@
 
 #define xyPos y*width + x
 
-#include "omar.h"
+#include <src/omar.h>
 
 #include <iostream>
 #include <string>
 #include <SDL.h>
 
-#include "include/glm/gtc/matrix_transform.hpp"
-#include "include/glad/glad.h"
-#include "include/stb_image.h"
+#include <external/glm/gtc/matrix_transform.hpp>
+#include <external/glad/glad.h>
+#include <external/stb_image/stb_image.h>
 
-#include "include/Tile.h"
-#include "include/Point.h"
-#include "include/Color.h"
-#include "include/shaders/shader.h"
+#include <src/Tile.h>
+#include <src/Point.h>
+#include <src/Color.h>
+#include <src/shader.h>
 
 using namespace std;
 using namespace omar;

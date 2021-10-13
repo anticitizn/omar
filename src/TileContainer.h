@@ -1,9 +1,9 @@
 #ifndef OMAR_TILECONTAINER
 #define OMAR_TILECONTAINER
 
-#include <Point.h>
-#include <Color.h>
-#include <Tile.h>
+#include <src/Point.h>
+#include <src/Color.h>
+#include <src/Tile.h>
 
 #include <string>
 

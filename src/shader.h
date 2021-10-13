@@ -4,19 +4,19 @@
 #include <fstream>
 #include <string>
 
-#include "../glm/glm.hpp"
-#include "../glm/gtc/matrix_transform.hpp"
-#include "../glm/gtc/type_ptr.hpp"
-#include "../glad/glad.cpp"
-#include "SDL.h"
-#include "SDL_opengl.h"
+#include <external/glm/glm.hpp>
+#include <external/glm/gtc/matrix_transform.hpp>
+#include <external/glm/gtc/type_ptr.hpp>
+#include <external/glad/glad.cpp>
+#include <SDL.h>
+#include <SDL_opengl.h>
 
 const char *vertShaderCode =
-#include "vertshader.txt"
+#include <data/shaders/vertshader.txt>
 ;
 
 const char *fragShaderCode =
-#include "fragshader.txt"
+#include <data/shaders/fragshader.txt>
 ;
 
 using namespace std;

@@ -1,12 +1,12 @@
-#include "omar.h"
-#include "TileContainer.h"
+#include <src/omar.h>
+#include <src/TileContainer.h>
 #include <iostream>
 
 using namespace omar;
 
 int main()
 {   
-	omar::Terminal window(16.0f, ' ', "");
+	omar::Terminal window(16.0f, ' ', "data/");
 	window.initialize();
 	
 	window.showFps = true;

@@ -2,12 +2,12 @@
 #define OMAR
 
 #include <string>
-#include "SDL.h"
+#include <SDL.h>
 
-#include "TileContainer.h"
-#include "include/Tile.h"
-#include "include/Point.h"
-#include "include/Color.h"
+#include <src/TileContainer.h>
+#include <src/Tile.h>
+#include <src/Point.h>
+#include <src/Color.h>
 
 using namespace std;
 
