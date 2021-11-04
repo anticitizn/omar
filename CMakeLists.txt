@@ -1,8 +1,14 @@
+cmake_minimum_required(VERSION 3.16)
+
 project(omar)
 
 file(GLOB SOURCES src/*.cpp)
 
-add_library(${PROJECT_NAME} OBJECT ${SOURCES})
+if(${CMAKE_CURRENT_SOURCE_DIR} MATCHES ${CMAKE_SOURCE_DIR})
+	add_executable(${PROJECT_NAME} ${SOURCES} main.cpp)
+else()
+	add_library(${PROJECT_NAME} OBJECT ${SOURCES})
+endif()
 
 find_package(SDL2 REQUIRED)
 
