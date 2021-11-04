@@ -1,15 +1,28 @@
-#pragma once
+#include <src/InterfaceElement.h>
 
-#include <vector>
-
-#include <src/Clickable>
-#include <src/TileContainer>
-
-class InterfaceElement : TileContainer
+InterfaceElement::InterfaceElement(int Width, int Height, char FillSymbol, InterfaceElement* Parent = NULL) : TileContainer(Width, Height, FillSymbol)
 {
-private:
-	InterfaceElement parent;
-	vector<InterfaceElement> children;
-public:
+	
+}
 
+void InterfaceElement::blit(TileContainer& otherContainer, int xOffset, int yOffset)
+{
+	// blit has to be reserved - paste itself into other containers
+	// blit all children onto itself
+	for (int i = 0; i < children.size(); i++)
+	{
+		
+	}
+	
+	TileContainer::blit(otherContainer, xOffset, yOffset);
+}
+
+void InterfaceElement::setPosition(Point newPosition)
+{
+	
+}
+
+Point InterfaceElement::getPosition()
+{
+	
 }
