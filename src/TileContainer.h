@@ -31,8 +31,10 @@ namespace omar
 	public:
 		TileContainer(int Width = 0, int Height = 0, char FillSymbol = ' ', Color TextColor = Color(255, 255, 255), Color TileColor = Color(0, 0, 0));
 		
-		// blits another card's content into itself starting at the specified x,y offset
+		// these should maybe be protected instead of public
+		// blits another TileContainer into itself starting at the given coordinates
 		void blit(TileContainer& otherCard, int xOffset, int yOffset);
+		// blits itself into another TileContainer starting at the given coordinates
 		
 		// getter methods
 		char getChar(int x, int y);

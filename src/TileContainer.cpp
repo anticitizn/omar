@@ -23,7 +23,7 @@ void TileContainer::blit(TileContainer& otherCard, int xOffset, int yOffset)
 		{
 			if (otherCard.blitTransparency && otherCard.getChar(x, y) == ' ')
 			{
-				
+				continue;
 			}
 			else
 			{
