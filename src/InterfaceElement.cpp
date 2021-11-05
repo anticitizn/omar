@@ -1,9 +1,10 @@
 #include <src/InterfaceElement.h>
 
-InterfaceElement::InterfaceElement(int Width, int Height, string Name, Point Position=Point(0,0), char FillSymbol = ' ', InterfaceElement* Parent = NULL) : TileContainer(Width, Height, FillSymbol)
+InterfaceElement::InterfaceElement(int Width, int Height, string Name, Point Position=Point(0,0), char FillSymbol = ' ') : TileContainer(Width, Height, FillSymbol)
 {
 	name = Name;
 	position = Position;
+	parent = NULL;
 }
 
 void InterfaceElement::addChild(InterfaceElement& child)
@@ -44,6 +45,11 @@ void InterfaceElement::blitInto(TileContainer& otherContainer)
 		children[i].blitInto(*this);
 	}
 	otherContainer.blit(*this, this->getPosition().x, this->getPosition().y);
+}
+
+void InterfaceElement::setParent(InterfaceElement* newParent)
+{
+	parent = newParent;
 }
 
 string InterfaceElement::getName()

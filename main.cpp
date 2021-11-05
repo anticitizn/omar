@@ -12,12 +12,13 @@ int main()
 	omar::Terminal window(16.0f, ' ', "data/");
 	window.initialize();
 	
-	InterfaceElement mainWindow(50, 30, "main_window", Point(0, 0), '.', (InterfaceElement*)NULL);
+	// these constructors are really stupid
+	InterfaceElement mainWindow(50, 30, "main_window", Point(0, 0), '.');
 	
-	InterfaceElement childWindow1(20, 20, "child_window", Point(5, 5), ' ', (InterfaceElement*)NULL);
+	InterfaceElement childWindow1(20, 20, "child_window1", Point(5, 5), ' ');
 	childWindow1.blitTransparency = false;
 	
-	InterfaceElement childWindow2(20, 20, "child_window", Point(25, 5), 'o', (InterfaceElement*)NULL);
+	InterfaceElement childWindow2(20, 20, "child_window2", Point(25, 5), 'o');
 	childWindow2.blitTransparency = false;
 	
 	childWindow1.setChar(5, 5, '@');
