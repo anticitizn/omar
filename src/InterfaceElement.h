@@ -16,8 +16,15 @@ private:
 	vector<InterfaceElement> children;
 	Point position;
 public:
-	InterfaceElement(int Width, int Height, string Name, char FillSymbol, InterfaceElement* Parent, Point Position); // parameters have default values, check .cpp file
-	void blitInto(InterfaceElement& otherContainer);
+	InterfaceElement(int Width, int Height, string Name, Point Position, char FillSymbol, InterfaceElement* Parent); // some parameters have default values, check .cpp file
+	
+	void addChild(InterfaceElement& child);
+	void removeChild(Point pos);
+	void removeChild(string childName);
+	
+	void blitInto(TileContainer& otherContainer);
+	
+	string getName();
 	void setPosition(Point newPosition);
 	Point getPosition();
 };

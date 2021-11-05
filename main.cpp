@@ -1,6 +1,9 @@
+#include <iostream>
+
 #include <src/omar.h>
 #include <src/TileContainer.h>
-#include <iostream>
+#include <src/InterfaceElement.h>
+#include <src/Point.h>
 
 using namespace omar;
 
@@ -8,6 +11,26 @@ int main()
 {   
 	omar::Terminal window(16.0f, ' ', "data/");
 	window.initialize();
+	
+	InterfaceElement mainWindow(50, 30, "main_window", Point(0, 0), '.', (InterfaceElement*)NULL);
+	
+	InterfaceElement childWindow1(20, 20, "child_window", Point(5, 5), ' ', (InterfaceElement*)NULL);
+	childWindow1.blitTransparency = false;
+	
+	InterfaceElement childWindow2(20, 20, "child_window", Point(25, 5), 'o', (InterfaceElement*)NULL);
+	childWindow2.blitTransparency = false;
+	
+	childWindow1.setChar(5, 5, '@');
+	childWindow1.setChar(6, 5, '@');
+	childWindow1.setChar(5, 6, '@');
+	childWindow1.setChar(6, 6, '@');
+	
+	mainWindow.addChild(childWindow1);
+	mainWindow.addChild(childWindow2);
+	
+	TileContainer finalWindow(120, 120, ' ', Color(255, 255, 255), Color(0, 0, 0));
+	mainWindow.blitInto(finalWindow);
+	window.blit(finalWindow, 0, 0);
 	
 	window.showFps = true;
 	

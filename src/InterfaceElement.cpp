@@ -1,17 +1,54 @@
 #include <src/InterfaceElement.h>
 
-InterfaceElement::InterfaceElement(int Width, int Height, string Name, char FillSymbol = ' ', InterfaceElement* Parent = NULL, Point Position=Point(0,0)) : TileContainer(Width, Height, FillSymbol)
+InterfaceElement::InterfaceElement(int Width, int Height, string Name, Point Position=Point(0,0), char FillSymbol = ' ', InterfaceElement* Parent = NULL) : TileContainer(Width, Height, FillSymbol)
 {
+	name = Name;
 	position = Position;
 }
 
-void InterfaceElement::blitInto(InterfaceElement& otherContainer)
+void InterfaceElement::addChild(InterfaceElement& child)
+{
+	children.push_back(child);
+}
+
+void InterfaceElement::removeChild(Point pos)
+{
+	for (int i = 0; i < children.size(); i++)
+	{
+		Point upperLeft(children[i].getPosition().x, children[i].getPosition().y);
+		Point lowerRight(upperLeft.x + children[i].getDimensions().x, upperLeft.y + children[i].getDimensions().y);
+		if (pos.x >= upperLeft.x && pos.x <= lowerRight.x && pos.y >= upperLeft.y && pos.y <= lowerRight.y)
+		{
+			children.erase(children.begin() + i);
+			i--;
+		}
+	}
+}
+
+void InterfaceElement::removeChild(string childName)
+{
+	for (int i = 0; i < children.size(); i++)
+	{
+		if (children[i].getName() == childName)
+		{
+			children.erase(children.begin() + i);
+			i--;
+		}
+	}
+}
+
+void InterfaceElement::blitInto(TileContainer& otherContainer)
 {
 	for (int i = 0; i < children.size(); i++)
 	{
 		children[i].blitInto(*this);
 	}
 	otherContainer.blit(*this, this->getPosition().x, this->getPosition().y);
+}
+
+string InterfaceElement::getName()
+{
+	return name;
 }
 
 void InterfaceElement::setPosition(Point newPosition)
