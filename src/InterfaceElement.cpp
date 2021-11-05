@@ -10,6 +10,7 @@ InterfaceElement::InterfaceElement(int Width, int Height, string Name, Point Pos
 void InterfaceElement::addChild(InterfaceElement& child)
 {
 	children.push_back(child);
+	child.setParent(this);
 }
 
 void InterfaceElement::removeChild(Point pos)
