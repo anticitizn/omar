@@ -12,3 +12,5 @@ CTestTestfile.cmake
 _deps
 omar
 Makefile
+.vscode
+build
