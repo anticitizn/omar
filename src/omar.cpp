@@ -378,6 +378,8 @@ void Terminal::processInput(SDL_Event event)
 		switch (event.type)
 		{
 			case SDL_MOUSEBUTTONDOWN:
+				leftClickHeld = true;
+				rightClickHeld = true;
 				int clickX;
 				int clickY;
 				SDL_GetMouseState(&clickX, &clickY);
@@ -409,6 +411,9 @@ void Terminal::cleanInputVariables()
 	clickPos.x = -1;
 	clickPos.y = -1;
 	
+	leftClickHeld = false;
+	rightClickHeld = false;
+
 	keyPress = (char)-1;
 	textInput = "";
 }

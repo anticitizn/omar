@@ -1,3 +1,6 @@
+#ifndef omar_utils_clickable
+#define omar_utils_clickable
+
 #include <src/Point.h>
 
 using namespace omar;
@@ -5,6 +8,8 @@ using namespace omar;
 class Clickable
 {
 public:
-	bool virtual click(Point clickPos) = 0;
-	bool virtual hover(Point hoverPos) = 0;
+	void virtual onClick(Point clickPos) { }
+	void virtual onHover(Point hoverPos) { }
 };
+
+#endif

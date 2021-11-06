@@ -3,8 +3,11 @@
 #include <src/omar.h>
 #include <src/TileContainer.h>
 #include <src/InterfaceElement.h>
+#include <src/Button.h>
 #include <src/Point.h>
+#include <src/TestClass.h>
 
+using namespace std;
 using namespace omar;
 
 int main()
@@ -18,16 +21,19 @@ int main()
 	InterfaceElement childWindow1(20, 20, "child_window1", Point(5, 5), ' ');
 	childWindow1.blitTransparency = false;
 	
-	InterfaceElement childWindow2(20, 20, "child_window2", Point(25, 5), 'o');
-	childWindow2.blitTransparency = false;
+	Button button(20, 20, "child_window2", Point(25, 5), 'o');
+	button.blitTransparency = false;
+
+	TestClass test;
+	button.subscribe(test);
 	
 	childWindow1.setChar(5, 5, '@');
 	childWindow1.setChar(6, 5, '@');
 	childWindow1.setChar(5, 6, '@');
 	childWindow1.setChar(6, 6, '@');
 	
-	mainWindow.addChild(childWindow1);
-	mainWindow.addChild(childWindow2);
+	mainWindow.addChild(&childWindow1);
+	mainWindow.addChild(&button);
 	
 	TileContainer finalWindow(120, 120, ' ', Color(255, 255, 255), Color(0, 0, 0));
 	mainWindow.blitInto(finalWindow);
@@ -52,8 +58,12 @@ int main()
 	bool running = true;
 	while (running)
 	{
-		window.setString(0, 2, to_string(window.getMousePosScreen().x));
-		window.setString(0, 3, to_string(window.getMousePosScreen().y));
+		if (window.isLClickHeld())
+		{
+			mainWindow.onClick(window.getMousePosTile());
+		}
+		window.setString(0, 2, to_string(window.getMousePosTile().x));
+		window.setString(0, 3, to_string(window.getMousePosTile().y));
 		window.setChar(0, 1, window.getKeyPress() > 0 ? window.getKeyPress() : ' ');
 		
 		if(window.getKeyPress() == 27)
