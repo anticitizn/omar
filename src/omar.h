@@ -14,7 +14,7 @@ using namespace std;
 namespace omar
 {
 
-	class Terminal
+	class Terminal : public TileContainer
 	{
 	private:
 		SDL_Window* screen;
@@ -47,7 +47,6 @@ namespace omar
 		unsigned int lastTick = 0;
 		void displayFps();
 		
-		TileContainer content;
 		float* vertices;
 		
 		// user input
@@ -82,25 +81,6 @@ namespace omar
 		
 		Point getPixelDimensions();
 		Point getTileDimensions();
-		
-		// setter methods
-		void setChar(int x, int y, char symbol);
-		
-		void setTextColor(int x, int y, int r, int g, int b);
-		void setTextColor(int x, int y, Color color);
-		
-		void setTileColor(int x, int y, int r, int g, int b);
-		void setTileColor(int x, int y, Color color);
-		
-		void setString(int x, int y, string str);
-		
-		void setString(int x, int y, string str, Color textColor);
-		void setString(int x, int y, string str, int textR, int textG, int text);
-		
-		void setString(int x, int y, string str, Color textColor, Color tileColor);
-		void setString(int x, int y, string str, int textR, int textG, int textB, int tileR, int tileG, int tileB);
-		
-		void blit(TileContainer& otherCard, int xOffset, int yOffset);
 		
 		Point screenToTilePosition(int x, int y);
 		Point screenToTilePosition(Point point);

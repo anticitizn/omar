@@ -1,4 +1,4 @@
-#include "TileContainer.h"
+#include <src/TileContainer.h>
 
 #define xyPos y*width + x
 
@@ -15,6 +15,18 @@ TileContainer::TileContainer(int Width /*= 0*/, int Height /*= 0*/, char FillSym
 	generateTiles(&tiles, width, height, fillSymbol);
 }
 
+void TileContainer::reinitialize(int Width, int Height, char FillSymbol, Color TextColor, Color TileColor)
+{
+	width = Width;
+	height = Height;
+	fillSymbol = FillSymbol;
+	textColor = TextColor;
+	tileColor = TileColor;
+	free(tiles);
+	
+	generateTiles(&tiles, width, height, fillSymbol);
+}
+
 void TileContainer::blit(TileContainer& otherCard, int xOffset, int yOffset)
 {
 	for (int x = 0; x < otherCard.width; x++)
@@ -23,7 +35,7 @@ void TileContainer::blit(TileContainer& otherCard, int xOffset, int yOffset)
 		{
 			if (otherCard.blitTransparency && otherCard.getChar(x, y) == ' ')
 			{
-				
+				continue;
 			}
 			else
 			{

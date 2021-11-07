@@ -127,7 +127,8 @@ void Terminal::displayFps()
 	setString(0, 0, to_string(fps).substr(0, 3), Color(255, 255, 255), Color(0, 0, 0));
 }
 
-Terminal::Terminal(const float TileSize /* = 16.0f */, const char FillSymbol /* = ' ' */, string ResourcesPath /* = "" */)
+Terminal::Terminal(const float TileSize /* = 16.0f */, const char FillSymbol /* = ' ' */, string ResourcesPath /* = "" */) 
+: TileContainer()
 {
 	tileSize = TileSize;
 	fillSymbol = FillSymbol;
@@ -180,6 +181,7 @@ void Terminal::initialize()
 	width = floor(contextWidth / tileSize);
 	height = floor(contextHeight / tileSize);
 	
+
 	// Initializing GLAD, make sure it's after the OpenGL context initialization
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
 	{
@@ -195,11 +197,11 @@ void Terminal::initialize()
 	glGenBuffers(1, &VBO);
 
 	glBindVertexArray(VAO);
-	
-	content = TileContainer(width, height, fillSymbol, textColor, tileColor);
+
+	TileContainer::reinitialize(width, height, fillSymbol, textColor, tileColor);
 	
 	allocateVertices(&vertices, width, height);
-	generateVertices(vertices, content, width, height);
+	generateVertices(vertices, *this, width, height);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, width * height * 60 * sizeof(float), vertices, GL_STATIC_DRAW);
@@ -270,7 +272,7 @@ void Terminal::draw()
 	if (showFps)
 		displayFps();
 		
-	generateVertices(vertices, content, width, height);
+	generateVertices(vertices, *this, width, height);
 	glBufferData(GL_ARRAY_BUFFER, width * height * 60 * sizeof(float), vertices, GL_STATIC_DRAW);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -294,22 +296,6 @@ void Terminal::clear()
 	}
 }
 
-// getter methods
-char Terminal::getChar(int x, int y) 
-{
-	return content.getChar(x, y);
-}
-
-Color Terminal::getTextColor(int x, int y)
-{
-	return content.getTextColor(x, y);
-}
-
-Color Terminal::getTileColor(int x, int y)
-{
-	return content.getTileColor(x, y);
-}
-
 Point Terminal::getPixelDimensions()
 {
 	return Point(contextWidth, contextHeight);
@@ -318,62 +304,6 @@ Point Terminal::getPixelDimensions()
 Point Terminal::getTileDimensions()
 {
 	return Point(width, height);
-}
-
-// setter methods
-void Terminal::setChar(int x, int y, char symbol)
-{
-	content.setChar(x, y, symbol);
-}
-
-void Terminal::setTextColor(int x, int y, int r, int g, int b)
-{
-	content.setTextColor(x, y, r, g, b);
-}
-
-void Terminal::setTextColor(int x, int y, Color color)
-{
-	setTextColor(x, y, color.r, color.g, color.b);
-}
-
-void Terminal::setTileColor(int x, int y, int r, int g, int b)
-{
-	content.setTileColor(x, y, r, g, b);
-}
-
-void Terminal::setTileColor(int x, int y, Color color)
-{
-	setTileColor(x, y, color.r, color.g, color.b);
-}
-
-void Terminal::setString(int x, int y, string str)
-{
-	content.setString(x, y, str);
-}
-
-void Terminal::setString(int x, int y, string str, Color textColor)
-{
-	content.setString(x, y, str, textColor);
-}
-
-void Terminal::setString(int x, int y, string str, int textR, int textG, int textB)
-{
-	content.setString(x, y, str, Color(textR, textG, textB));
-}
-
-void Terminal::setString(int x, int y, string str, Color textColor, Color tileColor)
-{
-	content.setString(x, y, str, textColor, tileColor);
-}
-
-void Terminal::setString(int x, int y, string str, int textR, int textG, int textB, int tileR, int tileG, int tileB)
-{
-	content.setString(x, y, str, Color(textR, textG, textB), Color(tileR, tileG, tileB));
-}
-
-void Terminal::blit(TileContainer& otherCard, int xOffset, int yOffset)
-{
-	content.blit(otherCard, xOffset, yOffset);
 }
 
 Point Terminal::screenToTilePosition(int x, int y)
@@ -448,6 +378,8 @@ void Terminal::processInput(SDL_Event event)
 		switch (event.type)
 		{
 			case SDL_MOUSEBUTTONDOWN:
+				leftClickHeld = true;
+				rightClickHeld = true;
 				int clickX;
 				int clickY;
 				SDL_GetMouseState(&clickX, &clickY);
@@ -479,6 +411,9 @@ void Terminal::cleanInputVariables()
 	clickPos.x = -1;
 	clickPos.y = -1;
 	
+	leftClickHeld = false;
+	rightClickHeld = false;
+
 	keyPress = (char)-1;
 	textInput = "";
 }
