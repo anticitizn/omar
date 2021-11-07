@@ -2,7 +2,7 @@
 
 #include <src/omar.h>
 #include <src/TileContainer.h>
-#include <src/InterfaceElement.h>
+#include <src/Panel.h>
 #include <src/Button.h>
 #include <src/Point.h>
 
@@ -15,9 +15,9 @@ int main()
 	window.initialize();
 	
 	// these constructors are really stupid
-	InterfaceElement mainWindow(50, 30, "main_window", Point(3, 3), '.');
+	Panel mainWindow(50, 30, "main_window", Point(3, 3), '.');
 	
-	InterfaceElement childWindow1(20, 20, "child_window1", Point(5, 5), ' ');
+	Panel childWindow1(20, 20, "child_window1", Point(5, 5), ' ');
 	childWindow1.blitTransparency = false;
 	
 	Button button(20, 20, "child_window2", Point(25, 5), 'o');

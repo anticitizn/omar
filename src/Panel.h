@@ -9,23 +9,23 @@
 
 using namespace omar;
 
-class InterfaceElement : public TileContainer, public Clickable
+class Panel : public TileContainer, public Clickable
 {
 private:
 	string name;
-	InterfaceElement* parent; // Is this property even necessary? Children seemingly never act on their parents
-	vector<InterfaceElement*> children;
+	Panel* parent; // Is this property even necessary? Children seemingly never act on their parents
+	vector<Panel*> children;
 	Point position;
 public:
-	InterfaceElement(int Width, int Height, string Name, Point Position, char FillSymbol); // some parameters have default values, check .cpp file
+	Panel(int Width, int Height, string Name, Point Position, char FillSymbol); // some parameters have default values, check .cpp file
 	
 	void blitInto(TileContainer& otherContainer);
 	
-	void addChild(InterfaceElement* child);
+	void addChild(Panel* child);
 	void removeChild(Point pos);
 	void removeChild(string childName);
 	
-	void setParent(InterfaceElement* newParent);
+	void setParent(Panel* newParent);
 
 	void onClick(Point clickPos);
 	void onHover(Point hoverPos);

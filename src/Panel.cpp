@@ -1,19 +1,19 @@
-#include <src/InterfaceElement.h>
+#include <src/Panel.h>
 
-InterfaceElement::InterfaceElement(int Width, int Height, string Name, Point Position=Point(0,0), char FillSymbol = ' ') : TileContainer(Width, Height, FillSymbol)
+Panel::Panel(int Width, int Height, string Name, Point Position=Point(0,0), char FillSymbol = ' ') : TileContainer(Width, Height, FillSymbol)
 {
 	name = Name;
 	position = Position;
 	parent = NULL;
 }
 
-void InterfaceElement::addChild(InterfaceElement* child)
+void Panel::addChild(Panel* child)
 {
 	children.push_back(child);
 	child->setParent(this);
 }
 
-void InterfaceElement::removeChild(Point pos)
+void Panel::removeChild(Point pos)
 {
 	for (int i = 0; i < children.size(); i++)
 	{
@@ -27,7 +27,7 @@ void InterfaceElement::removeChild(Point pos)
 	}
 }
 
-void InterfaceElement::removeChild(string childName)
+void Panel::removeChild(string childName)
 {
 	for (int i = 0; i < children.size(); i++)
 	{
@@ -39,7 +39,7 @@ void InterfaceElement::removeChild(string childName)
 	}
 }
 
-void InterfaceElement::blitInto(TileContainer& otherContainer)
+void Panel::blitInto(TileContainer& otherContainer)
 {
 	for (int i = 0; i < children.size(); i++)
 	{
@@ -48,12 +48,12 @@ void InterfaceElement::blitInto(TileContainer& otherContainer)
 	otherContainer.blit(*this, this->getPosition().x, this->getPosition().y);
 }
 
-void InterfaceElement::setParent(InterfaceElement* newParent)
+void Panel::setParent(Panel* newParent)
 {
 	parent = newParent;
 }
 
-void InterfaceElement::onClick(Point clickPos)
+void Panel::onClick(Point clickPos)
 {
 	Point pos(clickPos.x - getPosition().x, clickPos.y - getPosition().y);
 
@@ -69,7 +69,7 @@ void InterfaceElement::onClick(Point clickPos)
 	}
 }
 
-void InterfaceElement::onHover(Point hoverPos)
+void Panel::onHover(Point hoverPos)
 {
 	Point pos(hoverPos.x - getPosition().x, hoverPos.y - getPosition().y);
 
@@ -85,17 +85,17 @@ void InterfaceElement::onHover(Point hoverPos)
 		}
 }
 
-string InterfaceElement::getName()
+string Panel::getName()
 {
 	return name;
 }
 
-void InterfaceElement::setPosition(Point newPosition)
+void Panel::setPosition(Point newPosition)
 {
 	position = newPosition;
 }
 
-Point InterfaceElement::getPosition()
+Point Panel::getPosition()
 {
 	return position;
 }

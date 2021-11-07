@@ -4,12 +4,12 @@
 #include <vector>
 #include <string>
 
-#include <src/InterfaceElement.h>
+#include <src/Panel.h>
 #include <src/Clickable.h>
 
 using namespace omar;
 
-class Button : public InterfaceElement
+class Button : public Panel
 {
 private:
 	vector<Clickable*> subscribed; // please like and subscribe

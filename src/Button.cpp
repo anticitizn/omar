@@ -1,7 +1,7 @@
 #include <src/Button.h>
 
 Button::Button(int Width, int Height, string Name, Point Position, char FillSymbol)
-: InterfaceElement(Width, Height, Name, Position, FillSymbol)
+: Panel(Width, Height, Name, Position, FillSymbol)
 {
 
 }
