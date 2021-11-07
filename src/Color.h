@@ -17,6 +17,30 @@ namespace omar
 		int r;
 		int g;
 		int b;
+
+		int operator ==(Color color)
+		{
+			if (color.r == r && color.g == g && color.b == b)
+			{
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+
+		int operator !=(Color color)
+		{
+			if(color == *this)
+			{
+				return 0;
+			}
+			else
+			{
+				return 1;
+			}
+		}
 	};
 }
 

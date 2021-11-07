@@ -35,6 +35,10 @@ void TileContainer::blit(TileContainer& otherCard, int xOffset, int yOffset)
 		{
 			if (otherCard.blitTransparency && otherCard.getChar(x, y) == ' ')
 			{
+				if (otherCard.getTileColor(x,y) != getTileColor(x,y))
+				{
+					setTileColor(xOffset + x, y + yOffset, otherCard.getTileColor(x, y));
+				}
 				continue;
 			}
 			else
