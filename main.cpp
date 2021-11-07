@@ -24,7 +24,6 @@ int main()
 	
 	TileContainer finalWindow(120, 120, ' ', Color(255, 255, 255), Color(0, 0, 0));
 	
-	
 	window.showFps = true;
 
 	textBox.setChar(10, 2, '@');
