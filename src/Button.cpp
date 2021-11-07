@@ -18,7 +18,6 @@ void Button::unsubscribe(Clickable& subscriber)
 
 void Button::onClick(Point clickPos)
 {
-    cout << "Button clicked!" << endl;
     for (int i = 0; i < subscribed.size(); i++)
     {
         subscribed[i]->onClick(clickPos);

@@ -5,7 +5,6 @@
 #include <src/InterfaceElement.h>
 #include <src/Button.h>
 #include <src/Point.h>
-#include <src/TestClass.h>
 
 using namespace std;
 using namespace omar;
@@ -23,9 +22,6 @@ int main()
 	
 	Button button(20, 20, "child_window2", Point(25, 5), 'o');
 	button.blitTransparency = false;
-
-	TestClass test;
-	button.subscribe(test);
 	
 	childWindow1.setChar(5, 5, '@');
 	childWindow1.setChar(6, 5, '@');
