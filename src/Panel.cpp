@@ -53,10 +53,26 @@ void Panel::setParent(Panel* newParent)
 	parent = newParent;
 }
 
-void Panel::onClick(Point clickPos)
+void Panel::subscribeClick(Clickable& subscriber)
+{
+	clickSubscribers.push_back(&subscriber);
+}
+
+void Panel::subscribeHover(Hoverable& subscriber)
+{
+	hoverSubscribers.push_back(&subscriber);
+}
+
+void Panel::subscribeKeypress(Keypressable& subscriber)
+{
+	keypressSubscribers.push_back(&subscriber);
+}
+
+void Panel::click(string name, Point clickPos)
 {
 	Point pos(clickPos.x - getPosition().x, clickPos.y - getPosition().y);
-
+	
+	bool hitChild = false;
 	for (int i = 0; i < children.size(); i++)
 	{
 		Point upperLeft(children[i]->getPosition().x, children[i]->getPosition().y);
@@ -64,25 +80,34 @@ void Panel::onClick(Point clickPos)
 
 		if (pos.x >= upperLeft.x && pos.x <= lowerRight.x && pos.y >= upperLeft.y && pos.y <= lowerRight.y)
 		{
-			children[i]->onClick(Point(pos.x + children[i]->getPosition().x, pos.y + children[i]->getPosition().y));
+			hitChild = true;
+			children[i]->click(name == "" ? this->name : name, Point(pos.x + children[i]->getPosition().x, pos.y + children[i]->getPosition().y));
 		}
 	}
 }
 
-void Panel::onHover(Point hoverPos)
+void Panel::hover(string name, Point hoverPos)
 {
 	Point pos(hoverPos.x - getPosition().x, hoverPos.y - getPosition().y);
 
 	for (int i = 0; i < children.size(); i++)
-		{
-			Point upperLeft(children[i]->getPosition().x, children[i]->getPosition().y);
-			Point lowerRight(upperLeft.x + children[i]->getDimensions().x, upperLeft.y + children[i]->getDimensions().y);
+	{
+		Point upperLeft(children[i]->getPosition().x, children[i]->getPosition().y);
+		Point lowerRight(upperLeft.x + children[i]->getDimensions().x, upperLeft.y + children[i]->getDimensions().y);
 
-			if (pos.x >= upperLeft.x && pos.x <= lowerRight.x && pos.y >= upperLeft.y && pos.y <= lowerRight.y)
-			{
-				children[i]->onClick(Point(pos.x - children[i]->getPosition().x, pos.y - children[i]->getPosition().y));
-			}
+		if (pos.x >= upperLeft.x && pos.x <= lowerRight.x && pos.y >= upperLeft.y && pos.y <= lowerRight.y)
+		{
+			children[i]->click(name == "" ? this->name : name, Point(pos.x - children[i]->getPosition().x, pos.y - children[i]->getPosition().y));
 		}
+	}
+}
+
+void Panel::keypress(string name, char keypress)
+{
+	for (int i = 0; i < children.size(); i++)
+	{
+		children[i]->keypress(name == "" ? this->name : name, keypress);
+	}
 }
 
 string Panel::getName()

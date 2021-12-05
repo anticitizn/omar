@@ -3,7 +3,6 @@
 #include <src/omar.h>
 #include <src/TileContainer.h>
 #include <src/Panel.h>
-#include <src/Button.h>
 #include <src/Point.h>
 
 using namespace std;
@@ -46,7 +45,7 @@ int main()
 	{
 		if (window.isLClickHeld())
 		{
-			mainWindow.onClick(window.getMousePosTile());
+			mainWindow.click("", window.getMousePosTile());
 		}
 		window.setString(0, 2, to_string(window.getMousePosTile().x));
 		window.setString(0, 3, to_string(window.getMousePosTile().y));
